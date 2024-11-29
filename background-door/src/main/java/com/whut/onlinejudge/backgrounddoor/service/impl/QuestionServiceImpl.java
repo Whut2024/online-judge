@@ -1,9 +1,9 @@
-package com.whut.onlinejudge.common.service.impl;
+package com.whut.onlinejudge.backgrounddoor.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.whut.onlinejudge.backgrounddoor.mapper.QuestionMapper;
 import com.whut.onlinejudge.common.entity.Question;
 import com.whut.onlinejudge.common.service.QuestionService;
-import com.whut.onlinejudge.common.mapper.QuestionMapper;
 import org.springframework.stereotype.Service;
 
 /**
