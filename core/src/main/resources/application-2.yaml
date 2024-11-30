@@ -24,11 +24,11 @@ dubbo:
     name: online-judge-core
     # qos 服务器
     qos-enable: true
-    qos-port: 22221
+    qos-port: 22222
     qos-accept-foreign-ip: true
 
   protocol:
-    port: 20881
+    port: 20882
 
     #注册中心
   registry:

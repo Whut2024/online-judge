@@ -122,6 +122,7 @@ knife4j:
 dubbo:
   consumer:
     check: false
+    loadbalance: redis-least-usage
   application:
     name: online-judge-door
     # qos 服务器

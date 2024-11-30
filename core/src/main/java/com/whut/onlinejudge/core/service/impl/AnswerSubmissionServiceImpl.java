@@ -10,7 +10,7 @@ import org.apache.dubbo.config.annotation.DubboService;
  * @author liuqiao
  * @since 2024-11-29
  */
-@DubboService
+@DubboService(parameters = {"id-number", "2"})
 public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMapper, AnswerSubmission>
         implements AnswerSubmissionService {
 

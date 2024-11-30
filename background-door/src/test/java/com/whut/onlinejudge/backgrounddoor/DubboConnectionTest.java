@@ -12,11 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class DubboConnectionTest {
 
-    @DubboReference(retries = 0)
+    @DubboReference(retries = 0, loadbalance = "redis-least-usage")
     private AnswerSubmissionService answerSubmissionService;
 
     @Test
     void testConnection() {
         answerSubmissionService.test();
+        System.out.println("end");
     }
 }
