@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.whut.onlinejudge.backgrounddoor.mapper.QuestionMapper">
 
-    <resultMap id="BaseResultMap" type="com.whut.onlinejudge.common.entity.Question">
+    <resultMap id="BaseResultMap" type="com.whut.onlinejudge.common.model.entity.Question">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>

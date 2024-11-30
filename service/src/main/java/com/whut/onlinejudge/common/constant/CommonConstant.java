@@ -1,4 +1,4 @@
-package com.whut.onlinejudge.backgrounddoor.constant;
+package com.whut.onlinejudge.common.constant;
 
 /**
  * 通用常量

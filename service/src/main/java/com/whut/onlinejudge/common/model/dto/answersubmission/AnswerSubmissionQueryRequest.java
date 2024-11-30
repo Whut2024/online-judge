@@ -1,6 +1,6 @@
 package com.whut.onlinejudge.common.model.dto.answersubmission;
 
-import com.whut.onlinejudge.backgrounddoor.common.PageRequest;
+import com.whut.onlinejudge.common.model.dto.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

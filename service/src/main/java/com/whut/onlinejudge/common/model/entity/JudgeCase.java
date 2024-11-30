@@ -1,4 +1,4 @@
-package com.whut.onlinejudge.common.entity;
+package com.whut.onlinejudge.common.model.entity;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.whut.onlinejudge.backgrounddoor.common;
+package com.whut.onlinejudge.common.model.dto;
 
 import java.io.Serializable;
 import lombok.Data;

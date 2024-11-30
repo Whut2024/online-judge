@@ -1,6 +1,6 @@
 package com.whut.onlinejudge.common.service;
 
-import com.whut.onlinejudge.common.entity.Question;
+import com.whut.onlinejudge.common.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

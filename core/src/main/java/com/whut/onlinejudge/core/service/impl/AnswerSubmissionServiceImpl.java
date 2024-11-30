@@ -1,7 +1,7 @@
 package com.whut.onlinejudge.core.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.whut.onlinejudge.common.entity.AnswerSubmission;
+import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.core.mapper.AnswerSubmissionMapper;
 import org.apache.dubbo.config.annotation.DubboService;

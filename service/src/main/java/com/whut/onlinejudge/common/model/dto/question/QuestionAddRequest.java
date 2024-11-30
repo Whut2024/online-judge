@@ -1,7 +1,7 @@
 package com.whut.onlinejudge.common.model.dto.question;
 
-import com.whut.onlinejudge.common.entity.JudgeCase;
-import com.whut.onlinejudge.common.entity.JudgeConfig;
+import com.whut.onlinejudge.common.model.entity.JudgeCase;
+import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import lombok.Data;
 
 import java.io.Serializable;

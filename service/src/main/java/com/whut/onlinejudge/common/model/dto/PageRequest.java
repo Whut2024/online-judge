@@ -1,6 +1,6 @@
-package com.whut.onlinejudge.backgrounddoor.common;
+package com.whut.onlinejudge.common.model.dto;
 
-import com.whut.onlinejudge.backgrounddoor.constant.CommonConstant;
+import com.whut.onlinejudge.common.constant.CommonConstant;
 import lombok.Data;
 
 /**

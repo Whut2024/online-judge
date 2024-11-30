@@ -1,8 +1,8 @@
 package com.whut.onlinejudge.common.model.dto.question;
 
-import com.whut.onlinejudge.backgrounddoor.common.PageRequest;
-import com.whut.onlinejudge.common.entity.JudgeCase;
-import com.whut.onlinejudge.common.entity.JudgeConfig;
+import com.whut.onlinejudge.common.model.entity.JudgeCase;
+import com.whut.onlinejudge.common.model.entity.JudgeConfig;
+import com.whut.onlinejudge.common.model.dto.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

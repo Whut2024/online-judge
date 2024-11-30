@@ -1,7 +1,7 @@
 package com.whut.onlinejudge.backgrounddoor.utils;
 
 
-import com.whut.onlinejudge.common.entity.User;
+import com.whut.onlinejudge.common.model.entity.User;
 
 /**
  * @author whut2024

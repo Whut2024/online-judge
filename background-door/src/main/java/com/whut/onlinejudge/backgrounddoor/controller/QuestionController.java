@@ -2,13 +2,13 @@ package com.whut.onlinejudge.backgrounddoor.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whut.onlinejudge.backgrounddoor.common.BaseResponse;
-import com.whut.onlinejudge.backgrounddoor.common.DeleteRequest;
+import com.whut.onlinejudge.common.model.dto.DeleteRequest;
 import com.whut.onlinejudge.backgrounddoor.common.ResultUtils;
 import com.whut.onlinejudge.common.model.dto.question.QuestionAddRequest;
 import com.whut.onlinejudge.common.model.dto.question.QuestionQueryRequest;
 import com.whut.onlinejudge.common.model.dto.question.QuestionUpdateRequest;
 import com.whut.onlinejudge.common.model.vo.QuestionVo;
-import com.whut.onlinejudge.common.entity.Question;
+import com.whut.onlinejudge.common.model.entity.Question;
 import org.springframework.web.bind.annotation.*;
 
 /**

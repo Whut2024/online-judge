@@ -1,4 +1,4 @@
-package com.whut.onlinejudge.common.entity;
+package com.whut.onlinejudge.common.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -9,42 +9,47 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 用户表
- * @TableName t_user
+ * 答案提交表
+ * @TableName t_answer_submission
  */
-@TableName(value ="t_user")
+@TableName(value ="t_answer_submission")
 @Data
-public class User implements Serializable {
+public class AnswerSubmission implements Serializable {
     /**
-     * 题目 ID
+     * 答案提交 ID
      */
     @TableId
     private Long id;
 
     /**
-     * 账号
+     * 创建答案提交的用户 ID
      */
-    private String userAccount;
+    private Long userId;
 
     /**
-     * 头像网络地址
+     * 题目 ID
      */
-    private String userAvatar;
+    private Long questionId;
 
     /**
-     * 用户名
+     * 提交的代码
      */
-    private String userName;
+    private String submittedCode;
 
     /**
-     * 用户密码
+     * 答案提交的测试处理结果
      */
-    private String userPassword;
+    private String judgeInfo;
 
     /**
-     * 用户角色
+     * 提交的代码的语言
      */
-    private String userRole;
+    private String language;
+
+    /**
+     * 答案提交的状态 0 异常 1 通过 2 运行中
+     */
+    private Integer status;
 
     /**
      * 创建时间

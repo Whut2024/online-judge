@@ -15,16 +15,25 @@
     </properties>
 
     <dependencies>
+        <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
+            <optional>false</optional>
         </dependency>
-
+        <!--lombok-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
             <version>3.5.2</version>
+            <optional>false</optional>
+        </dependency>
+        <!--hutool-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.25</version>
         </dependency>
     </dependencies>
 
