@@ -10,4 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface AnswerSubmissionService extends IService<AnswerSubmission> {
 
+
+    void test();
+
 }

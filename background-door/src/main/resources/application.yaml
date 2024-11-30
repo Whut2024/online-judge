@@ -117,3 +117,28 @@ knife4j:
         api-rule-resources:
           -com.whut.onlinejudge.backgrounddoor.controller
 
+
+#Dubbo
+dubbo:
+  consumer:
+    check: false
+  application:
+    name: online-judge-door
+    # qos 服务器
+    qos-enable: true
+    qos-port: 22222
+    qos-accept-foreign-ip: true
+
+  protocol:
+    port: 20880
+
+    #注册中心
+  registry:
+    check: true
+    cluster: failover
+    password: whut
+    protocol: redis
+    address: 47.121.138.177:6300
+    parameters:
+      db.index: 1
+
