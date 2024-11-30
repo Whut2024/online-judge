@@ -1,4 +1,4 @@
-package com.whut.onlinejudge.backgrounddoor.model.dto.user;
+package com.whut.onlinejudge.common.model.dto.user;
 
 import lombok.Data;
 

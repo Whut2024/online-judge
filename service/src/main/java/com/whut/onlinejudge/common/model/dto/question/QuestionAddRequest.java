@@ -1,22 +1,14 @@
-package com.whut.onlinejudge.backgrounddoor.model.dto.question;
+package com.whut.onlinejudge.common.model.dto.question;
 
-import com.whut.onlinejudge.backgrounddoor.common.PageRequest;
 import com.whut.onlinejudge.common.entity.JudgeCase;
 import com.whut.onlinejudge.common.entity.JudgeConfig;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class QuestionUpdateRequest extends PageRequest implements Serializable {
-
-    /**
-     * 题目 ID
-     */
-    private Long id;
+public class QuestionAddRequest implements Serializable {
 
     /**
      * 题目标题
@@ -26,7 +18,12 @@ public class QuestionUpdateRequest extends PageRequest implements Serializable {
     /**
      * 题目标签
      */
-    private String tags;
+    private List<String> tags;
+
+    /**
+     * 题目内容
+     */
+    private String content;
 
     /**
      * 运行测试案例
@@ -37,11 +34,6 @@ public class QuestionUpdateRequest extends PageRequest implements Serializable {
      * 题目运行资源限制
      */
     private JudgeConfig judgeConfig;
-
-    /**
-     * 题目内容
-     */
-    private String content;
 
     private static final long serialVersionUID = 1L;
 }

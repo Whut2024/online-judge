@@ -1,4 +1,6 @@
-package com.whut.onlinejudge.backgrounddoor.model.vo;
+package com.whut.onlinejudge.common.model.vo;
+
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.Date;
  * @author liuqiao
  * @since 2024-11-30
  */
+@Data
 public class UserVo implements Serializable {
 
     /**

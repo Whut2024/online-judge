@@ -2,9 +2,9 @@ package com.whut.onlinejudge.backgrounddoor.controller;
 
 import com.whut.onlinejudge.backgrounddoor.common.BaseResponse;
 import com.whut.onlinejudge.backgrounddoor.common.ResultUtils;
-import com.whut.onlinejudge.backgrounddoor.model.dto.user.UserAddRequest;
-import com.whut.onlinejudge.backgrounddoor.model.dto.user.UserLoginRequest;
-import com.whut.onlinejudge.backgrounddoor.model.vo.UserVo;
+import com.whut.onlinejudge.common.model.dto.user.UserAddRequest;
+import com.whut.onlinejudge.common.model.dto.user.UserLoginRequest;
+import com.whut.onlinejudge.common.model.vo.UserVo;
 import org.springframework.web.bind.annotation.*;
 
 /**

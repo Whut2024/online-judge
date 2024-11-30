@@ -1,4 +1,4 @@
-package com.whut.onlinejudge.backgrounddoor.model.dto.answersubmission;
+package com.whut.onlinejudge.common.model.dto.answersubmission;
 
 import com.whut.onlinejudge.backgrounddoor.common.PageRequest;
 import lombok.Data;

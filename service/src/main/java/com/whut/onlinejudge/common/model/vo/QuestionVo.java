@@ -1,4 +1,4 @@
-package com.whut.onlinejudge.backgrounddoor.model.vo;
+package com.whut.onlinejudge.common.model.vo;
 
 import lombok.Data;
 
