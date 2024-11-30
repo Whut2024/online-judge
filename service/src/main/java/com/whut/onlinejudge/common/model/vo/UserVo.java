@@ -1,5 +1,7 @@
 package com.whut.onlinejudge.common.model.vo;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.whut.onlinejudge.common.model.entity.User;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -43,5 +45,15 @@ public class UserVo implements Serializable {
     private Date updateTime;
 
 
+    /**
+     * 用户登录 Token
+     */
+    private String token;
+
+
     private final static long serialVersionUID = -1;
+
+    public static UserVo getUserVo(User user) {
+        return BeanUtil.copyProperties(user, UserVo.class);
+    }
 }
