@@ -117,7 +117,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     private QueryWrapper<Question> getQuestionQueryWrapper(QuestionQueryRequest questionQueryRequest) {
         final Long id = questionQueryRequest.getId();
-        final User user = UserHolder.get();
         final Long userId = questionQueryRequest.getUserId();
         final String title = questionQueryRequest.getTitle();
         final List<String> tags = questionQueryRequest.getTags();
@@ -132,10 +131,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
             return wrapper;
         }
 
-        if (UserRoleEnum.isAdmin(user))
-            wrapper.eq(userId != null, "user_id", userId);
-        else
-            wrapper.eq("user_id", user.getId());
+
+        wrapper.eq(userId != null, "user_id", userId);
         wrapper.gt(endId != null, "id", endId);
         wrapper.like(StrUtil.isNotBlank(title), "title", title);
         wrapper.like(StrUtil.isNotBlank(content), "content", content);

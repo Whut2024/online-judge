@@ -112,6 +112,14 @@ public class QuestionController {
         return ResultUtils.success(questionService.getQuestionById(id));
     }
 
+    @GetMapping("/get/vo")
+    public BaseResponse<QuestionVo> getQuestionVoById(@RequestParam("id") Long id) {
+        ThrowUtils.throwIf(id == null ||
+                        id < 0,
+                ErrorCode.PARAMS_ERROR, "ID 错误");
+
+        return ResultUtils.success(QuestionVo.getQuestionVo(questionService.getQuestionById(id)));
+    }
 
     @PostMapping("/list/page")
     public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
