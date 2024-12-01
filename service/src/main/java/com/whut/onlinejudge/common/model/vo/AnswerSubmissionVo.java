@@ -1,5 +1,8 @@
 package com.whut.onlinejudge.common.model.vo;
 
+import cn.hutool.json.JSONUtil;
+import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
+import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -40,7 +43,7 @@ public class AnswerSubmissionVo implements Serializable {
     /**
      * 答案提交的测试处理结果
      */
-    private String judgeInfo;
+    private JudgeInfo judgeInfo;
 
     /**
      * 提交的代码的语言
@@ -63,4 +66,18 @@ public class AnswerSubmissionVo implements Serializable {
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
+
+    public static AnswerSubmissionVo getAnswerSubmissionVo(AnswerSubmission as) {
+        final AnswerSubmissionVo vo = new AnswerSubmissionVo();
+        vo.setId(as.getId());
+        vo.setLanguage(as.getLanguage());
+        vo.setStatus(as.getStatus());
+        vo.setJudgeInfo(JSONUtil.toBean(as.getJudgeInfo(), JudgeInfo.class));
+        vo.setUserId(as.getUserId());
+        vo.setCreateTime(as.getCreateTime());
+        vo.setUpdateTime(as.getUpdateTime());
+        vo.setSubmittedCode(as.getSubmittedCode());
+
+        return vo;
+    }
 }

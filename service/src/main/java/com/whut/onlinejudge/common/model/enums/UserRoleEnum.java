@@ -27,33 +27,6 @@ public enum UserRoleEnum {
         this.value = value;
     }
 
-    /**
-     * 获取值列表
-     *
-     * @return
-     */
-    public static List<String> getValues() {
-        return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
-    }
-
-    /**
-     * 根据 value 获取枚举
-     *
-     * @param value
-     * @return
-     */
-    public static UserRoleEnum getEnumByValue(String value) {
-        if (value == null) {
-            return null;
-        }
-        for (UserRoleEnum anEnum : UserRoleEnum.values()) {
-            if (anEnum.value.equals(value)) {
-                return anEnum;
-            }
-        }
-        return null;
-    }
-
 
     public static boolean isAdmin(User user) {
         if (user == null)
