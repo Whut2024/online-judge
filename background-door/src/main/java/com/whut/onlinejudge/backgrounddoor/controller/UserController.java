@@ -27,6 +27,7 @@ public class UserController {
 
     @PostMapping("/register")
     public BaseResponse<Long> register(@RequestBody UserAddRequest userAddRequest) {
+        ThrowUtils.throwIf(userAddRequest == null, ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final String userAccount = userAddRequest.getUserAccount();
         final String userAvatar = userAddRequest.getUserAvatar();
         final String userName = userAddRequest.getUserName();
@@ -54,6 +55,7 @@ public class UserController {
 
     @PostMapping("/login")
     public BaseResponse<UserVo> login(@RequestBody UserLoginRequest userLoginRequest) {
+        ThrowUtils.throwIf(userLoginRequest == null, ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final String userAccount = userLoginRequest.getUserAccount();
         final String userPassword = userLoginRequest.getUserPassword();
 
