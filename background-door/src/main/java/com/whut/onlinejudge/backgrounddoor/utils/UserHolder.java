@@ -1,6 +1,8 @@
 package com.whut.onlinejudge.backgrounddoor.utils;
 
 
+import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
+import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
 import com.whut.onlinejudge.common.model.entity.User;
 
 /**
@@ -19,7 +21,9 @@ public class UserHolder {
 
 
     public static User get() {
-        return USER_THREAD_LOCAL.get();
+        final User user = USER_THREAD_LOCAL.get();
+        ThrowUtils.throwIf(user == null, ErrorCode.NOT_LOGIN_ERROR);
+        return user;
     }
 
 

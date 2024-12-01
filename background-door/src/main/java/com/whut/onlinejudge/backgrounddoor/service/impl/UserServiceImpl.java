@@ -99,11 +99,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setVersion(version);
 
         // 缓存 token
-        final String userKey = RedisConstant.USER_CACHE + SecureUtil.md5(System.currentTimeMillis() + RedisConstant.SALT);
-        redisTemplate.opsForValue().set(userKey, JSONUtil.toJsonStr(user), RedisConstant.USER_CACHE_TIME, TimeUnit.MILLISECONDS);
+        String token = SecureUtil.md5(System.currentTimeMillis() + RedisConstant.SALT);
+        redisTemplate.opsForValue().set(RedisConstant.USER_CACHE + token, JSONUtil.toJsonStr(user), RedisConstant.USER_CACHE_TIME, TimeUnit.MILLISECONDS);
 
         final UserVo userVo = UserVo.getUserVo(user);
-        userVo.setToken(userKey);
+        userVo.setToken(token);
 
         return userVo;
     }
