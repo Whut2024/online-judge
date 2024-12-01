@@ -1,53 +1,7 @@
-spring:
-  # 数据源配置
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.121.138.177:3300/whut_friends?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: root
-    password: whut2023
-
-  # Redis 配置
-  redis:
-    database: 1
-    host: 47.121.138.177
-    port: 6300
-    timeout: 5000
-    password: whut
-
-
-
 #Dubbo
 dubbo:
-  consumer:
-    check: false
   application:
-    name: online-judge-core
-    # qos 服务器
-    qos-enable: true
     qos-port: 22222
-    qos-accept-foreign-ip: true
 
   protocol:
     port: 20882
-
-    #注册中心
-  registry:
-    check: true
-    cluster: failover
-    password: whut
-    protocol: redis
-    address: 47.121.138.177:6300
-    parameters:
-      db.index: 1
-
-
-
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
-      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
-      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
+import com.whut.onlinejudge.backgrounddoor.judge.JudgeStrategy;
 import com.whut.onlinejudge.backgrounddoor.mapper.AnswerSubmissionMapper;
 import com.whut.onlinejudge.backgrounddoor.utils.SqlUtils;
 import com.whut.onlinejudge.backgrounddoor.utils.UserHolder;
@@ -14,14 +15,17 @@ import com.whut.onlinejudge.common.constant.CommonConstant;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionAddRequest;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionQueryRequest;
 import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
+import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.common.model.entity.User;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.model.enums.UserRoleEnum;
 import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
+import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +38,10 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         implements AnswerSubmissionService {
 
     private final QuestionService questionService;
+
+    private final JudgeStrategy judgeStrategy;
+
+
 
     @Override
     public Long doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest) {
@@ -56,7 +64,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         as.setUserId(userId);
         this.save(as);
 
-
+        final JudgeInfo judgeInfo = judgeStrategy.judge(as.getId());
 
         return 0L;
     }

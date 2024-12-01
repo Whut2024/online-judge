@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whut.onlinejudge.core.mapper.QuestionMapper">
+
+    <resultMap id="BaseResultMap" type="com.whut.onlinejudge.common.model.entity.Question">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="judgeCase" column="judge_case" jdbcType="VARCHAR"/>
+        <result property="coreCode" column="core_code" jdbcType="VARCHAR"/>
+        <result property="judgeConfig" column="judge_config" jdbcType="VARCHAR"/>
+        <result property="submissionNumber" column="submission_number" jdbcType="INTEGER"/>
+        <result property="acceptanceNumber" column="acceptance_number" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,title,
+        content,judge_case,core_code,
+        judge_config,submission_number,acceptance_number,
+        create_time,update_time,is_delete
+    </sql>
+</mapper>
