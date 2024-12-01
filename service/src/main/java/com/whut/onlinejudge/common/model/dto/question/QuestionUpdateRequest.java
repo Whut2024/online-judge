@@ -2,16 +2,13 @@ package com.whut.onlinejudge.common.model.dto.question;
 
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
-import com.whut.onlinejudge.common.model.dto.PageRequest;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class QuestionUpdateRequest extends PageRequest implements Serializable {
+public class QuestionUpdateRequest implements Serializable {
 
     /**
      * 题目 ID
@@ -26,7 +23,7 @@ public class QuestionUpdateRequest extends PageRequest implements Serializable {
     /**
      * 题目标签
      */
-    private String tags;
+    private List<String> tags;
 
     /**
      * 运行测试案例
@@ -42,6 +39,11 @@ public class QuestionUpdateRequest extends PageRequest implements Serializable {
      * 题目内容
      */
     private String content;
+
+    /**
+     * 程序启动引导代码
+     */
+    private String coreCode;
 
     private static final long serialVersionUID = 1L;
 }

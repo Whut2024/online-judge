@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,12 +29,17 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
     /**
      * 题目标签
      */
-    private String tags;
+    private List<String> tags;
 
     /**
      * 题目内容
      */
     private String content;
+
+    /**
+     * 上一次查询的最大 ID
+     */
+    private Long endId;
 
     private static final long serialVersionUID = 1L;
 }

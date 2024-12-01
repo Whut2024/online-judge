@@ -1,9 +1,14 @@
 package com.whut.onlinejudge.common.model.vo;
 
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.json.JSONUtil;
+import com.whut.onlinejudge.common.model.entity.JudgeConfig;
+import com.whut.onlinejudge.common.model.entity.Question;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class QuestionVo implements Serializable {
@@ -26,7 +31,7 @@ public class QuestionVo implements Serializable {
     /**
      * 题目标签
      */
-    private String tags;
+    private List<String> tags;
 
     /**
      * 题目内容
@@ -36,7 +41,7 @@ public class QuestionVo implements Serializable {
     /**
      * 题目运行资源限制
      */
-    private String judgeConfig;
+    private JudgeConfig judgeConfig;
 
     /**
      * 答案提交数
@@ -63,5 +68,26 @@ public class QuestionVo implements Serializable {
      */
     private UserVo userVo;
 
+    /**
+     * 程序启动引导代码
+     */
+    private String coreCode;
+
     private static final long serialVersionUID = 1L;
+
+    public static QuestionVo getQuestionVo(Question question) {
+        final QuestionVo questionVo = new QuestionVo();
+        questionVo.setId(question.getId());
+        questionVo.setUserId(question.getUserId());
+        questionVo.setSubmissionNumber(question.getSubmissionNumber());
+        questionVo.setAcceptanceNumber(question.getAcceptanceNumber());
+        questionVo.setTags(JSONUtil.toBean(question.getTags(), new TypeReference<List<String>>() {}, false));
+        questionVo.setContent(question.getContent());
+        questionVo.setTitle(question.getTitle());
+        questionVo.setCoreCode(question.getCoreCode());
+        questionVo.setCreateTime(question.getCreateTime());
+        questionVo.setUpdateTime(question.getUpdateTime());
+        questionVo.setJudgeConfig(JSONUtil.toBean(question.getJudgeConfig(), JudgeConfig.class));
+        return questionVo;
+    }
 }

@@ -35,5 +35,10 @@ public class QuestionAddRequest implements Serializable {
      */
     private JudgeConfig judgeConfig;
 
+    /**
+     * 程序启动引导代码
+     */
+    private String coreCode;
+
     private static final long serialVersionUID = 1L;
 }
