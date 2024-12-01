@@ -64,6 +64,7 @@ public class User implements Serializable {
     /**
      * 登录版本
      */
+    @TableField(exist = false)
     private Long version;
 
     @TableField(exist = false)

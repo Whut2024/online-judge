@@ -3,7 +3,7 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.121.138.177:3300/whut_friends?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://47.121.138.177:3300/online_judge?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: root
     password: whut2023
     # 指定数据源类型
@@ -98,7 +98,7 @@ server:
     context-path: /api
 mybatis-plus:
   configuration:
-    map-underscore-to-camel-case: false
+    map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
@@ -115,7 +115,7 @@ knife4j:
       default:
         api-rule: package
         api-rule-resources:
-          -com.whut.onlinejudge.backgrounddoor.controller
+          - com.whut.onlinejudge.backgrounddoor.controller
 
 
 #Dubbo

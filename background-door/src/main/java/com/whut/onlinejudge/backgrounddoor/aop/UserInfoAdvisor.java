@@ -7,10 +7,8 @@ import com.whut.onlinejudge.backgrounddoor.constant.RedisConstant;
 import com.whut.onlinejudge.backgrounddoor.utils.UserHolder;
 import com.whut.onlinejudge.common.model.entity.User;
 import lombok.AllArgsConstructor;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -30,23 +28,28 @@ import java.util.concurrent.TimeUnit;
 @Order(1)
 @AllArgsConstructor
 @Component
+@Slf4j
 public class UserInfoAdvisor {
 
     private final StringRedisTemplate redisTemplate;
 
     @Before("execution(* com.whut.onlinejudge.backgrounddoor.controller..*.*(..))")
     public void setUserInfo() {
+        log.info("enter setUserInfo");
         final HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
 
         final String token = request.getHeader("token");
         if (StrUtil.isBlank(token) || token.length() != 32)
             return;
 
+        log.info("get a token");
+
         final String userKey = RedisConstant.USER_CACHE + token;
         final String userVoStr = redisTemplate.opsForValue().get(userKey);
         if (StrUtil.isBlank(userVoStr))
             return;
 
+        log.info("get userVoStr");
         final User user;
         try {
             user = JSONUtil.toBean(userVoStr, User.class);
@@ -59,20 +62,23 @@ public class UserInfoAdvisor {
         if (!user.getVersion().toString().equals(version))
             return;
 
+        log.info("get a valid version");
         redisTemplate.expire(userKey, RedisConstant.USER_CACHE_TIME, TimeUnit.MILLISECONDS);
         redisTemplate.expire(versionKey, RedisConstant.USER_LOGIN_VERSION_TIME, TimeUnit.MILLISECONDS);
 
         UserHolder.set(user);
     }
 
-    @After("execution(* com.whut.onlinejudge.backgrounddoor.controller..*.*(..))")
+    @AfterReturning("execution(* com.whut.onlinejudge.backgrounddoor.controller..*.*(..))")
     public void remove() {
         UserHolder.remove();
+        log.info("normal remove");
     }
 
     @AfterThrowing("execution(* com.whut.onlinejudge.backgrounddoor.controller..*.*(..))")
     public void removeAfterThrowing() {
         UserHolder.remove();
+        log.info("exception remove");
     }
 
 }
