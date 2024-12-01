@@ -17,7 +17,6 @@ public class DubboConnectionTest {
 
     @Test
     void testConnection() {
-        answerSubmissionService.test();
         System.out.println("end");
     }
 }

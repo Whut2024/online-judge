@@ -9,9 +9,9 @@ import lombok.Getter;
 @Getter
 public enum SatusEnum {
 
-    USER("运行中", 0),
-    ADMIN("完成", 1),
-    BAN("失败", 2);
+    ERROR("异常", 0),
+    OVER("完成", 1),
+    RUNNING("运行中", 2);
 
     private final String name;
 

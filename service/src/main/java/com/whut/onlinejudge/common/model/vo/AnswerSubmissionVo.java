@@ -70,6 +70,7 @@ public class AnswerSubmissionVo implements Serializable {
     public static AnswerSubmissionVo getAnswerSubmissionVo(AnswerSubmission as) {
         final AnswerSubmissionVo vo = new AnswerSubmissionVo();
         vo.setId(as.getId());
+        vo.setQuestionId(as.getQuestionId());
         vo.setLanguage(as.getLanguage());
         vo.setStatus(as.getStatus());
         vo.setJudgeInfo(JSONUtil.toBean(as.getJudgeInfo(), JudgeInfo.class));

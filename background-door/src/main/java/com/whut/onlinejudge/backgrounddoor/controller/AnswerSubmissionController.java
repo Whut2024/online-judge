@@ -63,7 +63,8 @@ public class AnswerSubmissionController {
         ThrowUtils.throwIf(userId != null && userId <= 0,
                 ErrorCode.PARAMS_ERROR, "用户 ID 错误");
 
-        ThrowUtils.throwIf(LanguageEnum.exists(language) || SatusEnum.exists(status),
+        ThrowUtils.throwIf((StrUtil.isNotBlank(language) && !LanguageEnum.exists(language)) ||
+                        (status != null && !SatusEnum.exists(status)),
                 ErrorCode.PARAMS_ERROR, "编程语言或者答案提交状态错误");
 
         return ResultUtils.success(answerSubmissionService.listQuestionSubmitByPage(answerSubmissionQueryRequest));
