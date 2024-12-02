@@ -1,6 +1,8 @@
 package com.whut.onlinejudge.common.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -9,6 +11,8 @@ import java.io.Serializable;
  * @since 2024-12-01
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class JudgeInfo implements Serializable {
 
     /**

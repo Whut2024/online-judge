@@ -1,15 +1,15 @@
 package com.whut.onlinejudge.core.judge;
 
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
-import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
-import com.whut.onlinejudge.common.model.entity.JudgeConfig;
-import com.whut.onlinejudge.common.model.entity.JudgeInfo;
-import com.whut.onlinejudge.common.model.entity.Question;
+import com.whut.onlinejudge.common.model.entity.*;
 import com.whut.onlinejudge.core.runner.CodeRunner;
-import com.whut.onlinejudge.core.runner.DockerCodeRunner;
+import com.whut.onlinejudge.core.runner.docker.DockerCodeRunner;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author liuqiao
@@ -24,6 +24,9 @@ public class JavaCoreJudgeStrategy extends CoreJudgeStrategy {
 
     @Override
     public JudgeInfo javaResolve(AnswerSubmission as, Question q) {
-        return runner.run(as.getSubmittedCode(), q.getCoreCode(), JSONUtil.toBean(q.getJudgeConfig(), JudgeConfig.class));
+        return runner.run(as.getSubmittedCode(),
+                q.getCoreCode(),
+                JSONUtil.toBean(q.getJudgeConfig(), JudgeConfig.class),
+                JSONUtil.toBean(q.getJudgeCase(), new TypeReference<List<JudgeCase>>() {}, false));
     }
 }

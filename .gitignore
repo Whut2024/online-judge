@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+jdk-21_linux-aarch64_bin.tar.gz
 
 ### STS ###
 .apt_generated
