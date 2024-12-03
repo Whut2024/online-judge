@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.entity.Question;
+import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
@@ -52,24 +53,25 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
         qWrapper.select(Question::getCoreCode, Question::getJudgeCase, Question::getJudgeConfig);
         final Question q = questionService.getOne(qWrapper);
         if (q == null) {
-            final JudgeInfo judgeInfo = new JudgeInfo();
-            judgeInfo.setMessage("相关的题目不存在");
-            judgeInfo.setTime(0);
-            judgeInfo.setMemory(0);
+            final JudgeInfo judgeInfo = JudgeInfo.zeroLimit("相关的题目不存在");
+            updateAnswerSubmission(as, judgeInfo, SatusEnum.ERROR);
             return judgeInfo;
         }
         q.setId(as.getQuestionId());
 
         // 代码执行  结果处理
         final JudgeInfo judgeInfo = coreJudgeStrategy.resolve(as, q);
+        updateAnswerSubmission(as, judgeInfo, SatusEnum.OVER);
+
+        return judgeInfo;
+    }
+
+    private void updateAnswerSubmission(AnswerSubmission as, JudgeInfo judgeInfo, SatusEnum satusEnum) {
         as.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
+        as.setStatus(satusEnum.getValue());
         as.setSubmittedCode(null);
         as.setLanguage(null);
         as.setQuestionId(null);
-
-        // 保存信息
         answerSubmissionService.updateById(as);
-
-        return judgeInfo;
     }
 }

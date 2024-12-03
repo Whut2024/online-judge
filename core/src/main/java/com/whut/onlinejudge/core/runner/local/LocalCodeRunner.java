@@ -7,7 +7,7 @@ import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
-import com.whut.onlinejudge.core.constant.CodeConstant;
+import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 import com.whut.onlinejudge.core.runner.CodeRunner;
 import com.whut.onlinejudge.core.runner.CodeRunnerContext;
 import com.whut.onlinejudge.core.runner.docker.DockerExecutor;
@@ -46,18 +46,18 @@ public class LocalCodeRunner extends CodeRunner {
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
         if (LocalCodeUtil.compile(language, submittedCode, coreCode,
-                prefix + CodeConstant.SOLUTION_NAME,
-                prefix + CodeConstant.MAIN_NAME,
+                prefix + JavaCodeConstant.SOLUTION_NAME,
+                prefix + JavaCodeConstant.MAIN_NAME,
                 prefix))
             // 编译失败
-            return new JudgeInfo(0, 0, "编译失败");
+            return JudgeInfo.zeroLimit("编译失败");
 
 
         // 代码执行
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
         final String command = CommandFactory.getExecutionCommand(language);
         if (command == null)
-            return new JudgeInfo(0, 0, "编程语言错误");
+            return JudgeInfo.zeroLimit("编程语言错误");
 
 
         final Process process;

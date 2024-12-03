@@ -5,8 +5,11 @@ import cn.hutool.core.util.StrUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
-import com.whut.onlinejudge.core.constant.CodeConstant;
+import com.whut.onlinejudge.core.constant.JavaCodeConstant;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -84,7 +87,7 @@ public abstract class CodeRunner {
      */
     protected void extractOutput(List<String> outputList, CodeRunnerContext runnerContext) {
         final int size = outputList.size();
-        final boolean pass = CodeConstant.TRUE.equals(outputList.get(size - 1));
+        final boolean pass = JavaCodeConstant.TRUE.equals(outputList.get(size - 1));
         int outputSize = -1;
         if (pass) {
             // 通过
@@ -94,7 +97,7 @@ public abstract class CodeRunner {
             outputSize = size - 3;
         } else {
             // 没有通过
-            if (CodeConstant.TRUE.equals(outputList.get(size - 2))) {
+            if (JavaCodeConstant.TRUE.equals(outputList.get(size - 2))) {
                 // 异常
                 runnerContext.setException(outputList.get(size - 3));
                 outputSize = size - 3;
@@ -105,8 +108,17 @@ public abstract class CodeRunner {
         }
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < outputSize; i++) {
-            builder.append(outputList.get(i));
+            builder.append(outputList.get(i)).append("\n");
         }
         runnerContext.setOutput(builder.toString());
+    }
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @PostConstruct
+    void init() {
+        // 注册当前服务器到 redis 的负载均衡 sorted_set 中
+        //redisTemplate.opsForZSet().add();
     }
 }

@@ -4,7 +4,7 @@ package com.whut.onlinejudge.core.constant;
  * @author liuqiao
  * @since 2024-12-02
  */
-public interface CodeConstant {
+public interface JavaCodeConstant {
 
     String MAIN_NAME = "/Main.java";
 

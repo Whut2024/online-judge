@@ -29,4 +29,8 @@ public class JudgeInfo implements Serializable {
      * 程序运行而外信息
      */
     private String message;
+
+    public static JudgeInfo zeroLimit(String message) {
+        return new JudgeInfo(0, 0, message);
+    }
 }
