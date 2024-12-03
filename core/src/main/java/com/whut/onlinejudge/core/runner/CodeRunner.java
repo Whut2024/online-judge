@@ -18,13 +18,14 @@ import java.util.List;
 public abstract class CodeRunner {
 
     /**
+     * @param language
      * @param submittedCode 用户提交的代码
      * @param coreCode      引导代码
      * @param judgeConfig   运行现状条件
      * @param judgeCaseList 代码输入和输出
      * @return 运行过程中的异常和资源消耗
      */
-    public abstract JudgeInfo run(String submittedCode, String coreCode, JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList);
+    public abstract JudgeInfo run(String language,String submittedCode, String coreCode, JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList);
 
     /**
      * 处理代码结果返回

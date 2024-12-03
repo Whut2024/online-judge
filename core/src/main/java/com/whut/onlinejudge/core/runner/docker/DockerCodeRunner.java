@@ -29,7 +29,7 @@ public class DockerCodeRunner extends CodeRunner {
     private final CodeRunnerConfig codeRunnerConfig;
 
     @Override
-    public JudgeInfo run(String submittedCode, String coreCode, JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+    public JudgeInfo run(String language, String submittedCode, String coreCode, JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 

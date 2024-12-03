@@ -24,9 +24,10 @@ public class JavaCoreJudgeStrategy extends CoreJudgeStrategy {
 
     @Override
     public JudgeInfo javaResolve(AnswerSubmission as, Question q) {
-        return runner.run(as.getSubmittedCode(),
+        return runner.run(as.getLanguage(),
+                as.getSubmittedCode(),
                 q.getCoreCode(),
-                JSONUtil.toBean(q.getJudgeConfig(), JudgeConfig.class),
-                JSONUtil.toBean(q.getJudgeCase(), new TypeReference<List<JudgeCase>>() {}, false));
+                JSONUtil.toBean(q.getJudgeConfig(), JudgeConfig.class), JSONUtil.toBean(q.getJudgeCase(), new TypeReference<List<JudgeCase>>() {
+                }, false));
     }
 }

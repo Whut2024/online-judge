@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
+import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
 import com.whut.onlinejudge.core.constant.CodeConstant;
 import com.whut.onlinejudge.core.runner.CodeRunner;
@@ -37,7 +38,9 @@ public class LocalCodeRunner extends CodeRunner {
     private final Runtime runtime = Runtime.getRuntime();
 
     @Override
-    public JudgeInfo run(String submittedCode, String coreCode, JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+    public JudgeInfo run(String language,
+                         String submittedCode, String coreCode,
+                         JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
@@ -51,10 +54,14 @@ public class LocalCodeRunner extends CodeRunner {
 
         // 代码执行
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
+        final String command = CommandFactory.get(language);
+        if (command == null)
+            return new JudgeInfo(0, 0, "编程语言错误");
+
 
         final Process process;
         try {
-            process = runtime.exec(String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", prefix, getInputArgs(judgeConfig, judgeCaseList)));
+            process = runtime.exec(String.format(command, prefix, getInputArgs(judgeConfig, judgeCaseList)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
