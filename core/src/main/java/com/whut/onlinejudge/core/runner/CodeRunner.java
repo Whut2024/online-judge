@@ -1,16 +1,26 @@
 package com.whut.onlinejudge.core.runner;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
+import com.whut.onlinejudge.core.command.CommandFactory;
+import com.whut.onlinejudge.core.config.CodeRunnerConfig;
 import com.whut.onlinejudge.core.constant.JavaCodeConstant;
+import com.whut.onlinejudge.core.util.LocalCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 运行引导代码和用户提交的代码的类
@@ -20,20 +30,54 @@ import java.util.List;
  */
 public abstract class CodeRunner {
 
+    @Autowired
+    private CodeRunnerConfig codeRunnerConfig;
+
     /**
-     * @param language
+     * @param language      编程语言
      * @param submittedCode 用户提交的代码
      * @param coreCode      引导代码
      * @param judgeConfig   运行现状条件
      * @param judgeCaseList 代码输入和输出
      * @return 运行过程中的异常和资源消耗
      */
-    public abstract JudgeInfo run(String language,String submittedCode, String coreCode, JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList);
+    public final JudgeInfo run(String language, String submittedCode, String coreCode,
+                               JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+        // 代码编译
+        final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
+
+        if (LocalCodeUtil.compile(language, submittedCode, coreCode,
+                prefix + JavaCodeConstant.SOLUTION_NAME,
+                prefix + JavaCodeConstant.MAIN_NAME,
+                prefix))
+            // 编译失败
+            return JudgeInfo.zeroLimit("编译失败");
+
+
+        // 代码执行
+        final CodeRunnerContext runnerContext = new CodeRunnerContext();
+        final String command = CommandFactory.getExecutionCommand(language);
+        if (command == null)
+            return JudgeInfo.zeroLimit("编程语言错误");
+
+
+        this.extractOutput(executeAndGetOutput(command, prefix, judgeConfig, judgeCaseList), runnerContext);
+
+        // 删除文件夹
+        FileUtil.del(prefix);
+        return this.extractContext(runnerContext);
+    }
+
+    /**
+     * 运行代码获取程序输出
+     */
+    protected abstract List<String> executeAndGetOutput(String command, String prefix,
+                                                        JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList);
 
     /**
      * 处理代码结果返回
      */
-    protected JudgeInfo extractContext(CodeRunnerContext runnerContext) {
+    protected final JudgeInfo extractContext(CodeRunnerContext runnerContext) {
         final JudgeInfo judgeInfo = new JudgeInfo();
         if (StrUtil.isBlank(runnerContext.getException())) {
             // 正常运行
@@ -52,7 +96,7 @@ public abstract class CodeRunner {
     /**
      * @return 内存 时间 测试案例个数 测试案例
      */
-    protected String getInputArgs(JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+    protected final String getInputArgs(JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         StringBuilder args = new StringBuilder();
         args.append(judgeConfig.getMemoryLimit()); // 内存
         args.append(" ");
@@ -85,7 +129,7 @@ public abstract class CodeRunner {
     /**
      * @param outputList // 输出-没有异常-未通过 // 输出-异常-有异常-未通过 // 输出-内存-时间-通过
      */
-    protected void extractOutput(List<String> outputList, CodeRunnerContext runnerContext) {
+    protected final void extractOutput(List<String> outputList, CodeRunnerContext runnerContext) {
         final int size = outputList.size();
         final boolean pass = JavaCodeConstant.TRUE.equals(outputList.get(size - 1));
         int outputSize = -1;

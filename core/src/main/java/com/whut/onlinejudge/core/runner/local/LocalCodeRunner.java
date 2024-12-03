@@ -1,22 +1,15 @@
 package com.whut.onlinejudge.core.runner.local;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
-import com.whut.onlinejudge.common.model.entity.JudgeInfo;
-import com.whut.onlinejudge.core.command.CommandFactory;
-import com.whut.onlinejudge.core.config.CodeRunnerConfig;
 import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 import com.whut.onlinejudge.core.runner.CodeRunner;
-import com.whut.onlinejudge.core.runner.CodeRunnerContext;
 import com.whut.onlinejudge.core.runner.docker.DockerExecutor;
-import com.whut.onlinejudge.core.util.LocalCodeUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -34,32 +27,11 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class LocalCodeRunner extends CodeRunner {
 
-    private final CodeRunnerConfig codeRunnerConfig;
-
     private final Runtime runtime = Runtime.getRuntime();
 
     @Override
-    public JudgeInfo run(String language,
-                         String submittedCode, String coreCode,
-                         JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
-        // 代码编译
-        final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
-
-        if (LocalCodeUtil.compile(language, submittedCode, coreCode,
-                prefix + JavaCodeConstant.SOLUTION_NAME,
-                prefix + JavaCodeConstant.MAIN_NAME,
-                prefix))
-            // 编译失败
-            return JudgeInfo.zeroLimit("编译失败");
-
-
-        // 代码执行
-        final CodeRunnerContext runnerContext = new CodeRunnerContext();
-        final String command = CommandFactory.getExecutionCommand(language);
-        if (command == null)
-            return JudgeInfo.zeroLimit("编程语言错误");
-
-
+    protected List<String> executeAndGetOutput(String command, String prefix,
+                                               JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         final Process process;
         try {
             process = runtime.exec(String.format(command, prefix, getInputArgs(judgeConfig, judgeCaseList)));
@@ -69,8 +41,11 @@ public class LocalCodeRunner extends CodeRunner {
         try {
             if (!process.waitFor(judgeConfig.getTimeLimit() * 3L / 2, TimeUnit.SECONDS)) {
                 process.destroy();
-                runnerContext.setException("time out");
-                return this.extractContext(runnerContext);
+                final List<String> list = new ArrayList<>();
+                list.add("运行时间过长");
+                list.add(JavaCodeConstant.FALSE);
+                list.add(JavaCodeConstant.FALSE);
+                return list;
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -79,12 +54,6 @@ public class LocalCodeRunner extends CodeRunner {
         // 输出-没有异常-未通过
         // 输出-异常-有异常-未通过
         // 输出-内存-时间-通过
-        final ArrayList<String> outputList = IoUtil.readLines(process.getInputStream(), StandardCharsets.UTF_8, new ArrayList<>());
-
-        this.extractOutput(outputList, runnerContext);
-
-        // 删除文件夹
-        FileUtil.del(prefix);
-        return this.extractContext(runnerContext);
+        return IoUtil.readLines(process.getInputStream(), StandardCharsets.UTF_8, new ArrayList<>());
     }
 }
