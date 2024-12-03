@@ -6,8 +6,10 @@ package com.whut.onlinejudge.core.demo;
  */
 public class Solution {
 
-    public int add(int a) {
+    public int add(int a, int b) {
         System.out.println("a = " + a);
-        return a + 1;
+        System.out.println("b = " + b);
+
+        return a + b;
     }
 }
