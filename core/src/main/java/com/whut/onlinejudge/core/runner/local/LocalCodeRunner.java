@@ -1,5 +1,6 @@
 package com.whut.onlinejudge.core.runner.local;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
@@ -44,7 +45,7 @@ public class LocalCodeRunner extends CodeRunner {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
-        if (!LocalCodeUtil.compile(submittedCode, coreCode,
+        if (LocalCodeUtil.compile(language, submittedCode, coreCode,
                 prefix + CodeConstant.SOLUTION_NAME,
                 prefix + CodeConstant.MAIN_NAME,
                 prefix))
@@ -54,7 +55,7 @@ public class LocalCodeRunner extends CodeRunner {
 
         // 代码执行
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
-        final String command = CommandFactory.get(language);
+        final String command = CommandFactory.getExecutionCommand(language);
         if (command == null)
             return new JudgeInfo(0, 0, "编程语言错误");
 
@@ -82,6 +83,8 @@ public class LocalCodeRunner extends CodeRunner {
 
         this.extractOutput(outputList, runnerContext);
 
+        // 删除文件夹
+        FileUtil.del(prefix);
         return this.extractContext(runnerContext);
     }
 }

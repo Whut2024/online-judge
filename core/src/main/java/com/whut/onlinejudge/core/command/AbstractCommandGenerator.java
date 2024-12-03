@@ -10,5 +10,10 @@ public abstract class AbstractCommandGenerator {
     /**
      * @param args 这个参数留给以后扩展
      */
-    public abstract String get(Object args);
+    public abstract String getExecutionCommand(Object args);
+
+    /**
+     * @param args 这个参数留给以后扩展
+     */
+    public abstract String getCompilationCommand(Object args);
 }

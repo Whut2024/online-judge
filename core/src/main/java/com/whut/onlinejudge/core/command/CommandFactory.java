@@ -22,8 +22,13 @@ public class CommandFactory {
         generatorMap.put(LanguageEnum.PYTHON.getName(), new PythonCommandGenerator());
     }
 
-    public static String get(String language) {
+    public static String getExecutionCommand(String language) {
         final AbstractCommandGenerator generator;
-        return (generator = generatorMap.get(language)) != null ? generator.get(null) : null;
+        return (generator = generatorMap.get(language)) != null ? generator.getExecutionCommand(null) : null;
+    }
+
+    public static String getCompilationCommand(String language) {
+        final AbstractCommandGenerator generator;
+        return (generator = generatorMap.get(language)) != null ? generator.getCompilationCommand(null) : null;
     }
 }

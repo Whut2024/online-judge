@@ -33,7 +33,7 @@ public class DockerCodeRunner extends CodeRunner {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
-        if (!LocalCodeUtil.compile(submittedCode, coreCode,
+        if (LocalCodeUtil.compile(language, submittedCode, coreCode,
                 prefix + CodeConstant.SOLUTION_NAME,
                 prefix + CodeConstant.MAIN_NAME,
                 prefix))
