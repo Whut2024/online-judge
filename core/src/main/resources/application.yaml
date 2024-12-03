@@ -97,8 +97,12 @@ dubbo:
 
   protocol:
     port: 20881
+    parameters:
+      machineId: ${random.long}
+
 
     #注册中心
+
   registry:
     check: true
     cluster: failover

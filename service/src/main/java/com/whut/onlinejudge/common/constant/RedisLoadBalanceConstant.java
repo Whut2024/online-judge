@@ -6,7 +6,9 @@ package com.whut.onlinejudge.common.constant;
  */
 public interface RedisLoadBalanceConstant {
 
-    String ID_GENERATOR_KEY = "oj:id:generator";
 
     String MIN_HEAP_KEY = "oj:min-heap";
+
+    String MACHINE_ID_NAME = "machineId";
+
 }

@@ -14,6 +14,7 @@ import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 import com.whut.onlinejudge.core.util.LocalCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -34,8 +35,6 @@ public abstract class CodeRunner {
 
     @Autowired
     private CodeRunnerConfig codeRunnerConfig;
-
-    private Long machineId;
 
     /**
      * @param language      编程语言
@@ -166,6 +165,9 @@ public abstract class CodeRunner {
 
     private final static DefaultRedisScript<Void> LOGOUT_NODE_SCRIPT;
 
+    @Value("${dubbo.protocol.parameters.machineId}")
+    private String machineId;
+
     static {
         LOGOUT_NODE_SCRIPT = new DefaultRedisScript<>();
         LOGOUT_NODE_SCRIPT.setLocation(new ClassPathResource("redis-lua/logout_node.lua"));
@@ -173,20 +175,13 @@ public abstract class CodeRunner {
 
     @PostConstruct
     void init() {
-        // 获取当前机器 ID
-        machineId = redisTemplate.opsForValue().increment(RedisLoadBalanceConstant.ID_GENERATOR_KEY);
-        if (machineId == null) {
-            log.error("Redis 服务错误");
-            throw new Error("无法获取当前机器 ID");
-        }
-
         // 注册当前服务器到 redis 的负载均衡 sorted_set 中
-        redisTemplate.opsForZSet().add(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId.toString(), 0f);
+        redisTemplate.opsForZSet().add(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, 0f);
 
         // 程序推出时删除节点
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
                 redisTemplate.execute(LOGOUT_NODE_SCRIPT,
                         Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
-                        machineId.toString())));
+                        machineId)));
     }
 }
