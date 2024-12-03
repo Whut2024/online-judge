@@ -123,4 +123,4 @@ mybatis-plus:
 
 code-runner:
   path-prefix: /Users/laowang/developer/codes/online-judge/core/target
-  environment: local
+  environment: docker

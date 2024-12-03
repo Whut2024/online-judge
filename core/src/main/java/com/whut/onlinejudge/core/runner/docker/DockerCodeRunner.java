@@ -1,11 +1,14 @@
 package com.whut.onlinejudge.core.runner.docker;
 
+import cn.hutool.core.io.FileUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
+import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
-import com.whut.onlinejudge.core.constant.CodeConstant;
+import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 import com.whut.onlinejudge.core.runner.CodeRunner;
+import com.whut.onlinejudge.core.runner.CodeRunnerContext;
 import com.whut.onlinejudge.core.util.LocalCodeUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -28,27 +31,40 @@ public class DockerCodeRunner extends CodeRunner {
 
     private final CodeRunnerConfig codeRunnerConfig;
 
+    private final DockerExecutor dockerExecutor;
+
     @Override
     public JudgeInfo run(String language, String submittedCode, String coreCode, JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
         if (LocalCodeUtil.compile(language, submittedCode, coreCode,
-                prefix + CodeConstant.SOLUTION_NAME,
-                prefix + CodeConstant.MAIN_NAME,
+                prefix + JavaCodeConstant.SOLUTION_NAME,
+                prefix + JavaCodeConstant.MAIN_NAME,
                 prefix))
             // 编译失败
-            return new JudgeInfo(0, 0, "编译失败");
+            return JudgeInfo.zeroLimit("编译失败");
 
+        final String command = CommandFactory.getExecutionCommand(language);
+        if (command == null)
+            return JudgeInfo.zeroLimit("编程语言错误");
 
         // Docker 运行代码
+        final CodeRunnerContext runnerContext = new CodeRunnerContext();
+        final String endCommand = String.format(command, prefix, getInputArgs(judgeConfig, judgeCaseList));
 
-        // 运行结果(返回值 消耗资源)返回
 
-        final JudgeInfo judgeInfo = new JudgeInfo();
-        judgeInfo.setMemory(10);
-        judgeInfo.setMessage("OK");
-        judgeInfo.setTime(10);
-        return judgeInfo;
+        // 输出-没有异常-未通过
+        // 输出-异常-有异常-未通过
+        // 输出-内存-时间-通过
+        final List<String> outputList = dockerExecutor.execute(endCommand);
+
+        this.extractOutput(outputList, runnerContext);
+
+        // 删除文件夹
+        FileUtil.del(prefix);
+        return this.extractContext(runnerContext);
     }
+
+
 }
