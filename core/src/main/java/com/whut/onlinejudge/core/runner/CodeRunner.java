@@ -2,8 +2,8 @@ package com.whut.onlinejudge.core.runner;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import com.whut.onlinejudge.common.constant.RedisLoadBalanceConstant;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
@@ -12,16 +12,16 @@ import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
 import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 import com.whut.onlinejudge.core.util.LocalCodeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 运行引导代码和用户提交的代码的类
@@ -29,10 +29,13 @@ import java.util.concurrent.TimeUnit;
  * @author liuqiao
  * @since 2024-12-01
  */
+@Slf4j
 public abstract class CodeRunner {
 
     @Autowired
     private CodeRunnerConfig codeRunnerConfig;
+
+    private Long machineId;
 
     /**
      * @param language      编程语言
@@ -161,9 +164,29 @@ public abstract class CodeRunner {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    private final static DefaultRedisScript<Void> LOGOUT_NODE_SCRIPT;
+
+    static {
+        LOGOUT_NODE_SCRIPT = new DefaultRedisScript<>();
+        LOGOUT_NODE_SCRIPT.setLocation(new ClassPathResource("redis-lua/logout_node.lua"));
+    }
+
     @PostConstruct
     void init() {
+        // 获取当前机器 ID
+        machineId = redisTemplate.opsForValue().increment(RedisLoadBalanceConstant.ID_GENERATOR_KEY);
+        if (machineId == null) {
+            log.error("Redis 服务错误");
+            throw new Error("无法获取当前机器 ID");
+        }
+
         // 注册当前服务器到 redis 的负载均衡 sorted_set 中
-        //redisTemplate.opsForZSet().add();
+        redisTemplate.opsForZSet().add(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId.toString(), 0f);
+
+        // 程序推出时删除节点
+        Runtime.getRuntime().addShutdownHook(new Thread(() ->
+                redisTemplate.execute(LOGOUT_NODE_SCRIPT,
+                        Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
+                        machineId.toString())));
     }
 }
