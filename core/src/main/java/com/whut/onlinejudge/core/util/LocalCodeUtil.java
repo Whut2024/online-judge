@@ -29,7 +29,7 @@ public class LocalCodeUtil {
         // 编译
         final Process process;
         try {
-            process = runtime.exec(String.format("javac -d %s -encoding utf-8 %s %s", dent, submittedSrc, coreCodeSrc));
+            process = runtime.exec(String.format("javac -d %s -encoding utf-8 %s %s", prefix, submittedSrc, coreCodeSrc));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
