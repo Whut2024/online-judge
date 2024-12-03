@@ -17,7 +17,7 @@ public class LocalCodeUtil {
 
     private final static Runtime runtime = Runtime.getRuntime();
 
-    public static boolean compile(String language, String submittedCode, String coreCode, String submittedSrc, String coreCodeSrc, String dent) {
+    public static boolean compile(String language, String submittedCode, String coreCode, String submittedSrc, String coreCodeSrc, String dent, String prefix) {
         // 保存源文件
         FileUtil.writeBytes(submittedCode.getBytes(StandardCharsets.UTF_8), submittedSrc);
         FileUtil.writeBytes(coreCode.getBytes(StandardCharsets.UTF_8), coreCodeSrc);
@@ -38,16 +38,21 @@ public class LocalCodeUtil {
             if (!process.waitFor(3000, TimeUnit.MILLISECONDS)) {
                 FileUtil.del(submittedSrc);
                 FileUtil.del(coreCodeSrc);
-                FileUtil.del(dent);
-                return true;
+                FileUtil.del(prefix);
+                return false;
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
         // 删除源文件
+        if (!FileUtil.exist(dent)) {
+            FileUtil.del(prefix);
+            return false;
+        }
+
         FileUtil.del(submittedSrc);
         FileUtil.del(coreCodeSrc);
-        return false;
+        return true;
     }
 }

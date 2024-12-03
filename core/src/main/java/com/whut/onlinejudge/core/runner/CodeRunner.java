@@ -46,12 +46,15 @@ public abstract class CodeRunner {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
-        if (LocalCodeUtil.compile(language, submittedCode, coreCode,
+        if (!LocalCodeUtil.compile(language, submittedCode, coreCode,
                 prefix + JavaCodeConstant.SOLUTION_NAME,
                 prefix + JavaCodeConstant.MAIN_NAME,
-                prefix))
+                prefix + JavaCodeConstant.SOLUTION_CLASS_NAME,
+                prefix)) {
             // 编译失败
+            FileUtil.del(prefix);
             return JudgeInfo.zeroLimit("编译失败");
+        }
 
 
         // 代码执行
