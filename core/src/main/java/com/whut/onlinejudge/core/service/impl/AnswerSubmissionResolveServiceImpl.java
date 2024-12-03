@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.entity.Question;
+import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
@@ -53,7 +54,7 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
         qWrapper.select(Question::getCoreCode, Question::getJudgeCase, Question::getJudgeConfig);
         final Question q = questionService.getOne(qWrapper);
         if (q == null) {
-            final JudgeInfo judgeInfo = JudgeInfo.zeroLimit("相关的题目不存在");
+            final JudgeInfo judgeInfo = JudgeInfo.zeroLimit(RunnerStatusEnum.QUESTION_NOT_EXIST);
             updateAnswerSubmission(as, judgeInfo, SatusEnum.ERROR);
             return judgeInfo;
         }

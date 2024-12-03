@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
+import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
 import com.whut.onlinejudge.core.constant.JavaCodeConstant;
@@ -53,7 +54,7 @@ public abstract class CodeRunner {
                 prefix)) {
             // 编译失败
             FileUtil.del(prefix);
-            return JudgeInfo.zeroLimit("编译失败");
+            return JudgeInfo.zeroLimit(RunnerStatusEnum.COMPILE_FAIL);
         }
 
 
@@ -61,7 +62,7 @@ public abstract class CodeRunner {
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
         final String command = CommandFactory.getExecutionCommand(language);
         if (command == null)
-            return JudgeInfo.zeroLimit("编程语言错误");
+            return JudgeInfo.zeroLimit(RunnerStatusEnum.LANGUAGE_ERROR);
 
 
         this.extractOutput(executeAndGetOutput(command, prefix, judgeConfig, judgeCaseList), runnerContext);
@@ -81,17 +82,14 @@ public abstract class CodeRunner {
      * 处理代码结果返回
      */
     protected final JudgeInfo extractContext(CodeRunnerContext runnerContext) {
-        final JudgeInfo judgeInfo = new JudgeInfo();
+        final JudgeInfo judgeInfo = JudgeInfo.zeroLimit(RunnerStatusEnum.INNER);
         if (StrUtil.isBlank(runnerContext.getException())) {
             // 正常运行
             judgeInfo.setMemory(runnerContext.getMemoryLimit());
             judgeInfo.setTime(runnerContext.getTimeLimit());
             judgeInfo.setMessage(runnerContext.getOutput());
-        } else {
-            judgeInfo.setTime(0);
-            judgeInfo.setMemory(0);
+        } else
             judgeInfo.setMessage(runnerContext.getOutput() + "\n" + runnerContext.getException());
-        }
 
         return judgeInfo;
     }
