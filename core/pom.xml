@@ -126,7 +126,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.whut.onlinejudge.core.CoreApplication</mainClass>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>
