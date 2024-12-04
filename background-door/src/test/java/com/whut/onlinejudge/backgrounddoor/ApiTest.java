@@ -28,7 +28,7 @@ public class ApiTest {
                             .header("Host", "localhost:8101")
                             .header("Connection", "keep-alive")
                             .body("{\n" +
-                                    "    \"language\": \"JAVA\",\n" +
+                                    "    \"language\": \"java\",\n" +
                                     "    \"questionId\": \"1863821439531016194\",\n" +
                                     "    \"submittedCode\": \"import java.util.Random;  public class Solution {      public int add(int a, int b) {         System.out.println(\\\"a = \\\" + a);         System.out.println(\\\"b = \\\" + b);         try {             Thread.sleep(new Random().nextInt(10) * 200L);         } catch (InterruptedException e) {             throw new RuntimeException(e);         }         return a + b;     } } \\n\"\n" +
                                     "}")

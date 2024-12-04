@@ -9,11 +9,11 @@ import lombok.Getter;
 @Getter
 public enum LanguageEnum {
 
-    JAVA("JAVA"),
-    C("C"),
-    C_PLUS("C_PLUS"),
-    PYTHON("PYTHON"),
-    GO("GO");
+    JAVA("java"),
+    C("c"),
+    C_PLUS("cpp"),
+    PYTHON("python"),
+    GO("go");
 
     private final String name;
 

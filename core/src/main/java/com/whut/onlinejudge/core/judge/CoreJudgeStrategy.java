@@ -15,19 +15,19 @@ public abstract class CoreJudgeStrategy {
     public JudgeInfo resolve(AnswerSubmission as, Question q) {
         final String language = as.getLanguage();
         switch (language) {
-            case "JAVA": {
+            case "java": {
                 return javaResolve(as, q);
             }
-            case "C_PLUS": {
+            case "cpp": {
                 return cPlusResolve(as, q);
             }
-            case "C": {
+            case "c": {
                 return cResolve(as, q);
             }
-            case "PYTHON": {
+            case "python": {
                 return pythonResolve(as, q);
             }
-            case "GO": {
+            case "go": {
                 return goResolve(as, q);
             }
         }
