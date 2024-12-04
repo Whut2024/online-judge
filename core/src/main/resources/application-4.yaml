@@ -5,5 +5,3 @@ dubbo:
 
   protocol:
     port: 20884
-    parameters:
-      machineId: 4

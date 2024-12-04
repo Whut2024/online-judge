@@ -176,7 +176,6 @@ public abstract class CodeRunner {
 
     private final static DefaultRedisScript<Void> LOGOUT_NODE_SCRIPT;
 
-    @Value("${dubbo.protocol.parameters.machineId}")
     private String machineId;
 
     static {
@@ -186,8 +185,13 @@ public abstract class CodeRunner {
 
     @PostConstruct
     void init() {
+        machineId = codeRunnerConfig.getMachineId();
         // 注册当前服务器到 redis 的负载均衡 sorted_set 中
-        redisTemplate.opsForZSet().add(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, 0f);
+        final Boolean absent = redisTemplate.opsForZSet().addIfAbsent(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, 0f);
+        if (Boolean.FALSE.equals(absent)) {
+            log.error("当前 machine id 已经存在");
+            Runtime.getRuntime().exit(-1);
+        }
 
         // 程序推出时删除节点
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

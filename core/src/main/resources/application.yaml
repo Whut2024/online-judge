@@ -98,7 +98,7 @@ dubbo:
   protocol:
     port: 20881
     parameters:
-      machineId: ${code-runner.id}
+      machineId: ${code-runner.machine-id}
 
 
     #注册中心
@@ -128,6 +128,7 @@ mybatis-plus:
 code-runner:
   path-prefix: /Users/laowang/developer/codes/online-judge/core/target
   environment: docker
+  machine-id: 100
 
 logging:
   level:

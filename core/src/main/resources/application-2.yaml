@@ -5,5 +5,3 @@ dubbo:
 
   protocol:
     port: 20882
-    parameters:
-      machineId: 2

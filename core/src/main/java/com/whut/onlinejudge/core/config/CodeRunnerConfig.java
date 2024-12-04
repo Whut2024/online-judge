@@ -15,4 +15,6 @@ public class CodeRunnerConfig {
     private String pathPrefix;
 
     private RunnerEnum environment;
+
+    private String machineId;
 }

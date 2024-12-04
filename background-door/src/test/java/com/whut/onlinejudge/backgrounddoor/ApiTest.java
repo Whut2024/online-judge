@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class ApiTest {
     public static void main(String[] args) {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -21,7 +21,7 @@ public class ApiTest {
                 while (true) {
                     HttpResponse response = HttpRequest
                             .post("http://localhost:8101/api/answer_submission/do")
-                            .header("token", "738b7daf6e2bae47113a2fbf8f8fad96")
+                            .header("token", "90457a164e7443840d7bde9738fb0b6a")
                             .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                             .header("Content-Type", "application/json")
                             .header("Accept", "*/*")
@@ -36,7 +36,7 @@ public class ApiTest {
 
                     System.out.println(new String(response.bodyBytes(), StandardCharsets.UTF_8));
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(5000000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
