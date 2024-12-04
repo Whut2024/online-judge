@@ -20,7 +20,7 @@ public class Main {
      * 检查当前的内存消耗是否大于最大限制内存，当大于最大限制内存时会输出相关的提示
      */
     private static boolean checkMemory() {
-        if ((startMemory - runtime.freeMemory()) / 1024 / 1024 > memoryLimit) {
+        if ((startMemory - runtime.freeMemory()) / 1024 > memoryLimit) {
             // 内存溢出
             System.out.println("内存溢出");
             System.out.println(false);
@@ -34,7 +34,7 @@ public class Main {
      * 检查当前的时间消耗是否大于最大限制时间，当大于最大限制时间时会输出相关的提示
      */
     private static boolean checkTime() {
-        if ((System.currentTimeMillis() - startTime) / 1000 > timeLimit) {
+        if (System.currentTimeMillis() - startTime > timeLimit) {
             // 运行超时
             System.out.println("运行超时");
             System.out.println(false);
@@ -56,7 +56,7 @@ public class Main {
 
     /**
      * 当结果不符合预期时输出相关提示
-     *
+     * <p>
      * 这个方法因该由题目提供者自定义
      */
     private static boolean checkResult(int src, int dent) {
@@ -72,7 +72,7 @@ public class Main {
      * 测试通过时输出相关的内存消耗和时间消耗
      */
     private static void pass(int caseNumber) {
-        System.out.println((startMemory - runtime.freeMemory()) / 1024 / 1024 / caseNumber);
+        System.out.println((startMemory - runtime.freeMemory()) / 1024 / caseNumber);
         System.out.println((System.currentTimeMillis() - startTime) / caseNumber);
         System.out.println(true);
     }
@@ -113,6 +113,4 @@ public class Main {
         // 通过
         pass(caseNumber);
     }
-
-
 }

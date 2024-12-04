@@ -144,4 +144,4 @@ dubbo:
       db.index: 1
 logging:
   level:
-    root: warn
+    root: info

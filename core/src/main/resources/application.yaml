@@ -132,4 +132,4 @@ code-runner:
 
 logging:
   level:
-    root: warn
+    root: info

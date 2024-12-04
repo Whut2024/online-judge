@@ -90,6 +90,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         final Page<AnswerSubmissionVo> answerSubmissionVoPage = new Page<>(answerSubmissionQueryRequest.getCurrent(),
                 answerSubmissionQueryRequest.getPageSize());
         answerSubmissionVoPage.setRecords(answerSubmissionVoList);
+        answerSubmissionVoPage.setTotal(page.getTotal());
 
         return answerSubmissionVoPage;
     }

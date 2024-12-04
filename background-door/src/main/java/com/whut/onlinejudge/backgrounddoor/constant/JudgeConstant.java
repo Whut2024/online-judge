@@ -6,7 +6,7 @@ package com.whut.onlinejudge.backgrounddoor.constant;
  */
 public interface JudgeConstant {
 
-    int MEMORY_MAX_LIMIT = 300;
+    int MEMORY_MAX_LIMIT = 300 * 1024;
 
-    int TIME_MAX_LIMIT = 15;
+    int TIME_MAX_LIMIT = 10_000;
 }

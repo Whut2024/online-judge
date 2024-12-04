@@ -78,7 +78,8 @@ public abstract class CodeRunner {
         // 减少负载记录
         redisTemplate.opsForZSet().incrementScore(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, -1f);
         counterAdder.increment();
-        timeAdder.add(runnerContext.getTimeLimit());
+        if (runnerContext.getTimeLimit() != null)
+            timeAdder.add(runnerContext.getTimeLimit());
 
         // 删除文件夹
         FileUtil.del(prefix);
