@@ -95,6 +95,13 @@
             <artifactId>docker-java-transport-httpclient5</artifactId>
             <version>3.3.0</version>
         </dependency>
+
+        <!--nacos config-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <version>2021.0.5.0</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

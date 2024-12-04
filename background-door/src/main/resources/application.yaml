@@ -1,11 +1,13 @@
 # 公共配置文件
 spring:
+  config:
+    import: 'nacos:'
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.121.138.177:3300/online_judge?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: root
-    password: whut2023
+    url: ${mysql.url}
+    username: ${mysql.username}
+    password: ${mysql.password}
     # 指定数据源类型
     type: com.alibaba.druid.pool.DruidDataSource
     # Druid 配置
@@ -76,7 +78,19 @@ spring:
         deny: # 拒绝访问的地址，deny优先于allow，如果在deny列表中，就算在allow列表中，也会被拒绝
 
   application:
-    name: online-judge-door
+    name: center
+  cloud:
+    nacos:
+      config:
+        server-addr: aliyun:8848/center-default.yaml
+        namespace: 130ca8b2-25e2-4566-b013-da6005365e57
+        group: support
+        prefix: center
+        file-extension: yaml
+        username: nacos
+        password: nacos
+  profiles:
+    active: default
   # 支持 swagger3
   mvc:
     path match:
@@ -86,10 +100,10 @@ spring:
   # Redis 配置
   redis:
     database: 1
-    host: 47.121.138.177
-    port: 6300
+    host: ${redis.address}
+    port: ${redis.port}
     timeout: 5000
-    password: whut
+    password: ${redis.password}
 
 server:
   address: 0.0.0.0
@@ -139,7 +153,7 @@ dubbo:
     cluster: failover
     password: whut
     protocol: redis
-    address: 47.121.138.177:6300
+    address: '${redis.address}:${redis.port}'
     parameters:
       db.index: 1
 logging:
