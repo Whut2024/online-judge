@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
+import com.whut.onlinejudge.backgrounddoor.dubbo.loadbalance.CurrentLeastUsageLoadBalance;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
 import com.whut.onlinejudge.backgrounddoor.judge.JudgeStrategy;
 import com.whut.onlinejudge.backgrounddoor.mapper.AnswerSubmissionMapper;
@@ -21,13 +22,13 @@ import com.whut.onlinejudge.common.model.entity.User;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.model.enums.UserRoleEnum;
 import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
-import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,13 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
 
     private final JudgeStrategy judgeStrategy;
 
+    private final StringRedisTemplate redisTemplate;
+
+    @PostConstruct
+    void init() {
+        CurrentLeastUsageLoadBalance.redisTemplate = redisTemplate;
+    }
+
 
 
     @Override
@@ -52,6 +60,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
 
         // 题目校验
         final LambdaQueryWrapper<Question> questionWrapper = new LambdaQueryWrapper<>();
+        questionWrapper.eq(Question::getId, questionId);
         ThrowUtils.throwIf(!questionService.getBaseMapper().exists(questionWrapper),
                 ErrorCode.PARAMS_ERROR, "题目不存在");
 

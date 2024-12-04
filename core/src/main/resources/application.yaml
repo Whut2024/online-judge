@@ -98,7 +98,7 @@ dubbo:
   protocol:
     port: 20881
     parameters:
-      machineId: ${random.long}
+      machineId: ${code-runner.id}
 
 
     #注册中心

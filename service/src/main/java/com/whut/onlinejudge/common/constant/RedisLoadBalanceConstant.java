@@ -11,4 +11,6 @@ public interface RedisLoadBalanceConstant {
 
     String MACHINE_ID_NAME = "machineId";
 
+    String EMPTY_RETURN = "-1";
+
 }

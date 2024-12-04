@@ -1,9 +1,9 @@
 #Dubbo
 dubbo:
   application:
-    qos-port: 22222
+    qos-port: 22224
 
   protocol:
-    port: 20882
+    port: 20884
     parameters:
-      machineId: 2
+      machineId: 4

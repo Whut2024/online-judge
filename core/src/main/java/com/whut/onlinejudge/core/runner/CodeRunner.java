@@ -69,6 +69,9 @@ public abstract class CodeRunner {
 
         this.extractOutput(executeAndGetOutput(command, prefix, judgeConfig, judgeCaseList), runnerContext);
 
+        // 减少负载记录
+        redisTemplate.opsForZSet().incrementScore(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, -1f);
+
         // 删除文件夹
         FileUtil.del(prefix);
         return this.extractContext(runnerContext);
