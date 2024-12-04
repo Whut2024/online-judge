@@ -117,7 +117,7 @@ dubbo:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名
@@ -128,3 +128,7 @@ mybatis-plus:
 code-runner:
   path-prefix: /Users/laowang/developer/codes/online-judge/core/target
   environment: docker
+
+logging:
+  level:
+    root: warn

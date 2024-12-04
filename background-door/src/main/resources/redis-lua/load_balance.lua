@@ -1,8 +1,6 @@
-local member = redis.call('zrange', KEYS[1], 0, 0)
-
-if member == nil then
-    return -1
-end
-
-redis.call('zincrby', KEYS[1], 1, member[1])
-return member[1]
+local key = KEYS[1]
+local minScore = redis.call('zrange', key, 0, 0, 'withscores')[2]
+local index = math.floor(ARGV[1] * redis.call('zcount', key, minScore, minScore))
+local res = redis.call('zrange', key, index, index)[1]
+redis.call('zincrby', key, 1, res)
+return res

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author liuqiao
@@ -27,6 +28,8 @@ public class CurrentLeastUsageLoadBalance extends AbstractLoadBalance {
 
     private final static DefaultRedisScript<String> LOAD_BALANCE_SCRIPT;
 
+    private final Random random = new Random();
+
     static {
         LOAD_BALANCE_SCRIPT = new DefaultRedisScript<>();
         LOAD_BALANCE_SCRIPT.setLocation(new ClassPathResource("redis-lua/load_balance.lua"));
@@ -39,7 +42,8 @@ public class CurrentLeastUsageLoadBalance extends AbstractLoadBalance {
         int failTime = 0;
         while (true) {
             final String member = redisTemplate.execute(LOAD_BALANCE_SCRIPT,
-                    Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY));
+                    Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
+                    String.valueOf(random.nextInt(100) * 0.01));
             if (StrUtil.isBlank(member) || RedisLoadBalanceConstant.EMPTY_RETURN.equals(member)) {
                 log.error("负载均衡数据在Redis中缺失");
                 if (++failTime == 3) {

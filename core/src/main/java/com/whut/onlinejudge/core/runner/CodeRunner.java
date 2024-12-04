@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 运行引导代码和用户提交的代码的类
@@ -35,6 +36,11 @@ public abstract class CodeRunner {
 
     @Autowired
     private CodeRunnerConfig codeRunnerConfig;
+
+    private final LongAdder counterAdder = new LongAdder();
+
+    private final LongAdder timeAdder = new LongAdder();
+
 
     /**
      * @param language      编程语言
@@ -71,6 +77,8 @@ public abstract class CodeRunner {
 
         // 减少负载记录
         redisTemplate.opsForZSet().incrementScore(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, -1f);
+        counterAdder.increment();
+        timeAdder.add(runnerContext.getTimeLimit());
 
         // 删除文件夹
         FileUtil.del(prefix);
@@ -182,9 +190,12 @@ public abstract class CodeRunner {
         redisTemplate.opsForZSet().add(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, 0f);
 
         // 程序推出时删除节点
-        Runtime.getRuntime().addShutdownHook(new Thread(() ->
-                redisTemplate.execute(LOGOUT_NODE_SCRIPT,
-                        Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
-                        machineId)));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            redisTemplate.execute(LOGOUT_NODE_SCRIPT,
+                    Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
+                    machineId);
+            log.warn("处理请求数 {}", counterAdder.sum());
+            log.warn("用户代码运行时间 {}", timeAdder.sum());
+        }));
     }
 }

@@ -6,12 +6,18 @@ package com.whut.onlinejudge.backgrounddoor;
  */
 public class CodeFormatTest {
     public static void main(String[] args) {
-        final String code = "public class Solution {\n" +
+        final String code = "import java.util.Random;\n" +
+                "\n" +
+                "public class Solution {\n" +
                 "\n" +
                 "    public int add(int a, int b) {\n" +
                 "        System.out.println(\"a = \" + a);\n" +
                 "        System.out.println(\"b = \" + b);\n" +
-                "\n" +
+                "        try {\n" +
+                "            Thread.sleep(new Random().nextInt(10) * 200L);\n" +
+                "        } catch (InterruptedException e) {\n" +
+                "            throw new RuntimeException(e);\n" +
+                "        }\n" +
                 "        return a + b;\n" +
                 "    }\n" +
                 "}";
