@@ -29,7 +29,6 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "code-runner", name = "environment", havingValue = "docker")
 @Conditional(DockerExecutor.class)
 public class DockerExecutor implements Condition {
 
@@ -54,7 +53,8 @@ public class DockerExecutor implements Condition {
         if (check)
             return pass;
 
-        if (!RunnerEnum.DOCKER.same(context.getEnvironment().getProperty("code-runner.environment", RunnerEnum.class))) {
+        RunnerEnum runnerEnum = context.getEnvironment().getProperty("code-runner.environment", RunnerEnum.class);
+        if (!RunnerEnum.DOCKER.same(runnerEnum)) {
             pass = false;
             check = true;
             return false;

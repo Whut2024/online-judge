@@ -5,3 +5,9 @@ dubbo:
 
   protocol:
     port: 20881
+spring:
+  cloud:
+    nacos:
+      server-addr: aliyun:8848/oj_core-1.yaml
+code-runner:
+  environment: local

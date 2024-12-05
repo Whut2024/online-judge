@@ -15,7 +15,6 @@ import java.util.List;
  * @author liuqiao
  * @since 2024-12-01
  */
-@ConditionalOnBean(DockerCodeRunner.class)
 @Component
 @AllArgsConstructor
 public class JavaCoreJudgeStrategy extends CoreJudgeStrategy {
