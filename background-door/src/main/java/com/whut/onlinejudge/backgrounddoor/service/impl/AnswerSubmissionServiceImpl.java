@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
 import com.whut.onlinejudge.backgrounddoor.dubbo.loadbalance.CurrentLeastUsageLoadBalance;
+import com.whut.onlinejudge.backgrounddoor.exception.BusinessException;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
 import com.whut.onlinejudge.backgrounddoor.judge.JudgeStrategy;
 import com.whut.onlinejudge.backgrounddoor.mapper.AnswerSubmissionMapper;
+import com.whut.onlinejudge.backgrounddoor.utils.DangerousWordCheck;
 import com.whut.onlinejudge.backgrounddoor.utils.SqlUtils;
 import com.whut.onlinejudge.backgrounddoor.utils.UserHolder;
 import com.whut.onlinejudge.common.constant.CommonConstant;
@@ -50,13 +52,16 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
     }
 
 
-
     @Override
     public Long doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest) {
         final Long questionId = answerSubmissionAddRequest.getQuestionId();
         final String submittedCode = answerSubmissionAddRequest.getSubmittedCode();
         final String language = answerSubmissionAddRequest.getLanguage();
         final Long userId = UserHolder.get().getId();
+
+        // 关键字检查
+        if (DangerousWordCheck.check(language, submittedCode))
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "代码错误");
 
         // 题目校验
         final LambdaQueryWrapper<Question> questionWrapper = new LambdaQueryWrapper<>();
