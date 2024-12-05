@@ -5,3 +5,6 @@ dubbo:
 
   protocol:
     port: 20884
+    host: '113.57.237.92'
+code-runner:
+  environment: local

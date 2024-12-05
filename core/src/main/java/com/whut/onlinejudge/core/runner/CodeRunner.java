@@ -62,6 +62,8 @@ public abstract class CodeRunner {
                 prefix)) {
             // 编译失败
             FileUtil.del(prefix);
+            redisTemplate.opsForZSet().incrementScore(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, -1f);
+            counterAdder.increment();
             return JudgeInfo.zeroLimit(RunnerStatusEnum.COMPILE_FAIL);
         }
 
