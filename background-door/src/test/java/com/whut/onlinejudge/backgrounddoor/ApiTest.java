@@ -4,6 +4,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author liuqiao
@@ -11,7 +12,10 @@ import java.nio.charset.StandardCharsets;
  */
 public class ApiTest {
     public static void main(String[] args) {
-        for (int i = 0; i < 30; i++) {
+        final long processStart = System.currentTimeMillis();
+        final LongAdder adder = new LongAdder();
+
+        for (int i = 0; i < 20; i++) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -22,7 +26,7 @@ public class ApiTest {
                     long start = System.currentTimeMillis();
                     HttpResponse response = HttpRequest
                             .post("http://189.1.244.220:8101/api/answer_submission/do")
-                            .header("token", "83f309477837817a1c52d045b7aa42e4")
+                            .header("token", "9836398af3a26cea9fe788849a0f88b8")
                             .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                             .header("Content-Type", "application/json")
                             .header("Accept", "*/*")
@@ -33,13 +37,17 @@ public class ApiTest {
 
                     System.out.println(new String(response.bodyBytes(), StandardCharsets.UTF_8) + "请求消耗时间 " +
                             (System.currentTimeMillis() - start));
+                    adder.increment();
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
             }).start();
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() ->
+                System.out.println("平均 QPS = " + (adder.sum() * 1000 / (System.currentTimeMillis() - processStart)))));
     }
 }

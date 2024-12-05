@@ -1,6 +1,7 @@
 package com.whut.onlinejudge.backgrounddoor.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.whut.onlinejudge.backgrounddoor.annotation.TimeLimit;
 import com.whut.onlinejudge.backgrounddoor.common.BaseResponse;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
 import com.whut.onlinejudge.backgrounddoor.common.ResultUtils;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @AllArgsConstructor
+@TimeLimit(prefix = "global:")
 public class UserController {
 
     private final UserService userService;

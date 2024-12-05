@@ -9,4 +9,6 @@ package com.whut.onlinejudge.backgrounddoor.lock;
 public interface LockFailTask {
 
     void execute();
+
+    LockFailTask DEFAULT_FAIL_TASK = () -> {};
 }

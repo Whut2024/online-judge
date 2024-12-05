@@ -19,4 +19,9 @@ public interface RedisConstant {
     String USER_LOGIN_VERSION_KEY = "USER:LOGIN:VERSION:"; // 19 + 19 = 36
 
     long USER_LOGIN_VERSION_TIME = 30 * 60 * 1000L;
+
+
+    String GLOBAL_LIMIT_KEY = "global:";
+
+    long GLOBAL_LIMIT_TIME = 50000L;
 }

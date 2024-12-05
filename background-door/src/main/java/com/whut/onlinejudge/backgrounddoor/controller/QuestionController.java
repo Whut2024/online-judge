@@ -3,6 +3,7 @@ package com.whut.onlinejudge.backgrounddoor.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.whut.onlinejudge.backgrounddoor.annotation.TimeLimit;
 import com.whut.onlinejudge.backgrounddoor.common.BaseResponse;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
 import com.whut.onlinejudge.backgrounddoor.constant.JudgeConstant;
@@ -31,6 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/question")
 @AllArgsConstructor
+@TimeLimit(prefix = "global:")
 public class QuestionController {
 
 

@@ -26,6 +26,10 @@ public class UserHolder {
         return user;
     }
 
+    public static User tryGet() {
+        return USER_THREAD_LOCAL.get();
+    }
+
 
     public static void remove() {
         USER_THREAD_LOCAL.remove();
