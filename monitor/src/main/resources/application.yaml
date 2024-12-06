@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: aliyun:8848/oj_monitor-1.yaml
+        namespace: 130ca8b2-25e2-4566-b013-da6005365e57
+        group: support
+        prefix: oj_monitor
+        file-extension: yaml
+        username: nacos
+        password: nacos
+  config:
+    import: 'nacos:'
+  profiles:
+    active: 1

@@ -1,0 +1,1 @@
+service-chooser=com.whut.onlinejudge.backgrounddoor.dubbo.loadbalance.ServiceChooser

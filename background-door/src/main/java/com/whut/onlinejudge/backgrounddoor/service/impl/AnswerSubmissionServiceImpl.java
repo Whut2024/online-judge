@@ -44,14 +44,6 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
 
     private final JudgeStrategy judgeStrategy;
 
-    private final StringRedisTemplate redisTemplate;
-
-    @PostConstruct
-    void init() {
-        CurrentLeastUsageLoadBalance.redisTemplate = redisTemplate;
-    }
-
-
     @Override
     public Long doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest) {
         final Long questionId = answerSubmissionAddRequest.getQuestionId();

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @ConditionalOnClass({AnswerSubmissionResolveService.class, DubboAutoConfiguration.class})
 @Component
-public class RpcRemoteJudgeStrategy implements JudgeStrategy {
+public class RpcRemoteJudgeStrategy extends JudgeStrategy {
 
     @DubboReference(retries = 0, loadbalance = "redis-least-usage", timeout = 10_000)
     private AnswerSubmissionResolveService answerSubmissionResolveService;
