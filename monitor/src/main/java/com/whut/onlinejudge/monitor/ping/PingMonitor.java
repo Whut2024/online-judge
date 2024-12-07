@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 两个不同频率的定时方法
@@ -50,6 +51,8 @@ public class PingMonitor {
 
     private static final DefaultRedisScript<Void> UP_NODE_SCRIPT;
 
+    private static final DefaultRedisScript<Long> DECREASE_FAIL_TIME_SCRIPT;
+
     private final static ThreadLocal<String> ID_STORAGE;
 
     static {
@@ -57,9 +60,84 @@ public class PingMonitor {
 
         DOWN_NODE_SCRIPT = new DefaultRedisScript<>();
         DOWN_NODE_SCRIPT.setLocation(new ClassPathResource("redis-lua/down_node.lua"));
+        /**
+         * --- 获取对应权重
+         * local score = redis.call('ZMSCORE', KEY[1], ARGV[1])[1]
+         * if score == nil then
+         *     return -1
+         * end
+         *
+         * --- 校验权重大小
+         * if score >= ARGV[2] then
+         *     return
+         * end
+         *
+         * --- 增加权重
+         * redis.call('ZINCRBY', KEY[1], ARGV[2], ARGV[1])
+         *
+         * --- 删除待下线 set 中的信息
+         * redis.call('SREM', KEY[2], ARGV[1])
+         */
 
         UP_NODE_SCRIPT = new DefaultRedisScript<>();
         UP_NODE_SCRIPT.setLocation(new ClassPathResource("redis-lua/up_node.lua"));
+        /**
+         * --- 获取对应权重
+         * local score = redis.call('ZMSCORE', KEY[1], ARGV[1])[1]
+         * if score == nil then
+         *     return -1
+         * end
+         *
+         * --- 校验权重大小
+         * if score < ARGV[2] then
+         *     return
+         * end
+         *
+         * --- 降低权重
+         * redis.call('ZINCRBY', KEY[1], -ARGV[2], ARGV[1])
+         */
+
+        DECREASE_FAIL_TIME_SCRIPT = new DefaultRedisScript<>();
+        DECREASE_FAIL_TIME_SCRIPT.setLocation(new ClassPathResource("redis-lua/decrease_fail_time.lua"));
+        DECREASE_FAIL_TIME_SCRIPT.setResultType(Long.class);
+        /**
+         * --- 降低失败次数
+         * local failTime = redis.call('GET', KEY[1])
+         * if failTime == nil then
+         *     return -1
+         * end
+         *
+         * --- 计算出降低后的失败次数
+         * if failTime >= 2 * ARGV[1] then
+         *     failTime = failTime / 2
+         * else
+         *     failTime = failTime - 1
+         * end
+         *
+         * if failTime > ARGV[1] then
+         *     --- 更新次数缓存
+         *     redis.call('SETEX', KEY[1], ARGV[2], failTime)
+         *     return 1
+         * end
+         *
+         * --- 节点恢复
+         *
+         * redis.call('DEL', KEY[1])
+         *
+         * --- 获取对应权重
+         * local score = redis.call('ZMSCORE', KEY[2], ARGV[3])[1]
+         * if score == nil then
+         *     return -1
+         * end
+         *
+         * --- 校验权重大小
+         * if score < ARGV[4] then
+         *     return 1
+         * end
+         *
+         * --- 降低权重
+         * redis.call('ZINCRBY', KEY[2], -ARGV[4], ARGV[3])
+         */
     }
 
     private final ConcurrentHashSet<String> failMachineIdSet = new ConcurrentHashSet<>(16);
@@ -88,6 +166,7 @@ public class PingMonitor {
                     log.warn("{} 节点可能存在网络问题", machineId);
                     fail = true;
                 }
+
                 if (fail) {
                     // 加权 删除待下线信息
                     redisTemplate.execute(DOWN_NODE_SCRIPT,
@@ -97,6 +176,17 @@ public class PingMonitor {
                     log.warn("{} 节点加权 删除待下线信息", machineId);
                     // 定时监测 set
                     failMachineIdSet.add(machineId);
+                } else {
+                    // 降低异常次数 可能恢复正常节点
+                    redisTemplate.execute(DECREASE_FAIL_TIME_SCRIPT,
+                            CollectionUtil.newArrayList(RedisLoadBalanceConstant.FAIL_MACHINE_ID_KEY + machineId, // key1
+                                    RedisLoadBalanceConstant.MIN_HEAP_KEY), // key2
+                            RedisLoadBalanceConstant.MAX_FAIL_TIME, // argv 1,
+                            TimeUnit.MILLISECONDS.toSeconds(RedisLoadBalanceConstant.FAIL_MACHINE_TIME), // argv 2
+                            machineId, // argv 3
+                            RedisLoadBalanceConstant.FAIL_HEIGHT); // argv 4
+                    log.warn("{} 节点测试通过", machineId);
+                    failMachineIdSet.remove(machineId);
                 }
             } finally {
                 ID_STORAGE.remove();
@@ -135,7 +225,7 @@ public class PingMonitor {
                 log.warn("{} 节点可能恢复正常", machineId);
 
                 if (wake) {
-                    // 减权
+                    // 恢复正常节点
                     redisTemplate.execute(UP_NODE_SCRIPT,
                             CollectionUtil.newArrayList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
                             machineId, RedisLoadBalanceConstant.FAIL_HEIGHT);

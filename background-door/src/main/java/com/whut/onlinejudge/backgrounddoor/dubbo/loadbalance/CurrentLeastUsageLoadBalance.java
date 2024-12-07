@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -47,7 +48,7 @@ public class CurrentLeastUsageLoadBalance extends AbstractLoadBalance {
             if (StrUtil.isBlank(member) || RedisLoadBalanceConstant.EMPTY_RETURN.equals(member)) {
                 log.error("负载均衡数据在Redis中缺失");
                 if (++failTime == 3) {
-                    throw new Error("负载均衡数据在Redis中缺失");
+                    throw new RpcException("负载均衡数据在Redis中缺失");
                 }
             }
 
@@ -59,7 +60,7 @@ public class CurrentLeastUsageLoadBalance extends AbstractLoadBalance {
             }
             log.error("负载均衡实例在RPC配置中心缺失");
             if (++failTime == 3) {
-                throw new Error("负载均衡实例在RPC配置中心缺失");
+                throw new RpcException("负载均衡实例在RPC配置中心缺失");
             }
         }
     }
