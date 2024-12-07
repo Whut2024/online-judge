@@ -1,8 +1,10 @@
+飞📖 🔗 https://h1nj7u0kkda.feishu.cn/docx/XwsDdJt2UoSyamxS8kfcWlisnud?from=from_copylink
+
 # 整体架构
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ODliMzFlNTI4MDFlYTM0NmMzMTMyZjdiNzhiYzNmZWJfeEd1b3RCSGlwRTRWWVU0U0h3T0F5b2lOZnUyNklEV1JfVG9rZW46WTAxemJodGRWb1pBc2F4Y3pIS2NsclNLbnJSXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=NjNiZDkwNjY4YzhlM2RhZjVhNDUyZmU1MjNmMzc1NjdfcXQwVXFsMHFyTFhtUG9nbHlKNlRMaXREenpUNnp6TXBfVG9rZW46TEVmUmJ2UFExb0FQSnV4R0t4NWNkaTUxbmhkXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-飞书📖链接🔗 https://h1nj7u0kkda.feishu.cn/docx/XwsDdJt2UoSyamxS8kfcWlisnud?from=from_copylink
+
 
 # 核心流程
 
@@ -18,11 +20,17 @@ Nacos Redis 会作为数据中心，存储每个实例的地址，负载信息�
 
 ### 监控的实现
 
-单独的进程会给每个实例发送一个执行输出 Hello World 的命令
+单独的服务实例会给每个实例发送一个执行输出 Hello World 的命令
 
-如果超时或者返回错误则认为实例错误，尝试在别的 Docker 服务器上开启一台新的实例
+如果超时或者返回错误则认为实例异常，提高该实例的记录负载量，暂时不让这个实例被继续选择
+
+定时去监控这些异常的实例，在响应正常的情况下再次给实例上线
 
 ！！现在的监控节点是单机，可能存在网络拥塞的问题
+
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=YWZjZTk4MzQxZjQ1MzNlMTdmNWY1NDlmNDNhZWYzMWJfY3p5U3pRYUE1a0plN1ptanFLWEhuV3JQaEpTdHd5ZGNfVG9rZW46WHVsZmJzU29Yb01BYkd4Q1JwZWNqUmdjblNjXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
+
+
 
 ### 负载均衡实现
 
@@ -34,13 +42,13 @@ member-实例 ID
 
 score-运行用户代码的进程数
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=MjBlMzliYzhhNGI2OGRiZGU1MDBjMDllMDdkMDRjMzFfVWF4WTE2a1JoVFpwYU42T3l2b0tidGdyT3llYjRQZGpfVG9rZW46Q3FMTmJtclNQb1VCd2x4aDhSSmNKUzlrbmJmXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWFjYzIzMjljZTczMjcxNzhjMjc0NzYwZTdjOWM5ZDVfa1NPeEZsS21uVkgwOFBhYkIyT2w4MGw3SEdobWI0VVVfVG9rZW46Um1IcWJhT2Vab28xQmF4TjZMWWNZMmh1bnlnXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
 
 
 ## 提交题目数据流
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=Yjc2MzMyNjU5YjE2MGRkNWM2NDkxOGQ4MmIwOTcwY2NfMjBGbGlzd3Y5WW8yd0dmTFdPZmRBNWgwbnZjcnd2ZmhfVG9rZW46QlF6Z2JiMnZVb2RIVFN4Z2tqQWNMTWszbkNkXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTFkM2QzNmQzYTA4YjA5OTJjMzY0ZDk1NGI3NTM5YmZfU1lWUXc5UXV2T25oalBRRE5BQmV1VDBDbmVUUEk2SVdfVG9rZW46TGpvcWJJMXdXbzViTXJ4Z0VOdWNpZ2pkbjFnXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
 
 
@@ -289,9 +297,13 @@ url: '/api/question/question_submit/list/page',
 
 ## 限流模块
 
+采用最基础的固定窗口限流，为了迎合前端人员遗留的代码缺陷，在一次处理时间不超过限制的请求结束后会直接释放锁，防止抖动的请求无法被处理
+
 ## 资源型负载均衡逻辑
 
 每个实例对象会以管理这个实例的 Docker 服务器上启动的代码执行后台服务 id 作为实例名字的一部分，这一部分也会作为 Redis 的 Sorted_Set 中的 member 存储下来，需要时会选择负载最小的实例，返回给门户后台服务器，服务器获取到这个实例的名字后可以知道应该调用哪一个代码执行后台服务器，代码执行服务器拿到这个名字后也可以知道使用 Docker 服务器中的哪一个实例
+
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=YzdiZGUwNDg3NTEwOGIzNzViZGVmYzljNzUxZTczZGNfTW9BQzh0WlJNcG5jQmVVV2lXbG1lQWtEWXRsTlV0UjhfVG9rZW46QnNZRWJNZ0F0b0M4eUZ4OXo0SWNhaXlFbktkXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
 
 
@@ -355,25 +367,25 @@ public class ApiTest {
 
 #### 轮询型
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmNhNGNlMGM0NjZjODQ5NmRhNGU4NzQzNjE2ZGU1Y2ZfenpvR01LV3E4eUtGQWswbzVQOVJHY0JreEh4ZmNlSW9fVG9rZW46UEowY2JRbHcwb1NwRlN4eEx1V2M5ckxubnRlXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=YTRkNjRmOTQ3NDU4M2YwODZkODQ5NGNlZThmYzcxY2VfZFNwNG96VkZPS2JrNDdxTm9CME1vSHRhWU5mWkpkV3BfVG9rZW46UEowY2JRbHcwb1NwRlN4eEx1V2M5ckxubnRlXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWRjNjhlZGNmMDI3N2RkMGRkZWQ3ZTdhYTI0ZjhjMDhfY05TdzRxb0Q4VW5XZWJpZzNSckNONHdDOHR5amFldmtfVG9rZW46RExGa2Jadjl1b1VhNUF4aFJ0c2NxQXhZbkdRXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=NjlhM2RlMzU0ZDdjOTI2YmQ0YTRjN2QyZGRhZmI1ODJfYjI3VTI2cmxnNWdoQWE3V3BzRDI3VDhIcVVwQk53dWpfVG9rZW46RExGa2Jadjl1b1VhNUF4aFJ0c2NxQXhZbkdRXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=M2ZkNWRmM2NkNmZiMjU2Y2Q4NDRmNmU3NjlkODdhODZfRkZNQ2tYalhHdThqZFVVSVNLOHNtUXRua3pBM284bUZfVG9rZW46SHh6aGJOcU90bzNPZ3R4a0tjNmN1ZEZjblplXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=NzZiNGZjYjhlZWVjYTMxNTBmMGNlZDk0MjY3ZmZlZjZfdndTTG16eGVWbm9jYndaNjl3czJwYU80V2tRVm1pemFfVG9rZW46SHh6aGJOcU90bzNPZ3R4a0tjNmN1ZEZjblplXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=NzJmZmU2YWI2MDcwMDgyN2E5NjY4ZTY2OTI2MWQwNjdfV2ZWekJlZFBoSkMyT0dnUk9sZTRyQWZKeVNlQTc5bjhfVG9rZW46R3oxaGJVb3E3b1U1UTZ4eFRDemNnaW54bnFmXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGIyODViZTE3ZDBlYzMzZmUxZGQwMzUxZTZiY2E5ZmVfM2VTYmhqTzFQODNYcVNqWGVXQ3p4enBoOUZMVlMyQVJfVG9rZW46R3oxaGJVb3E3b1U1UTZ4eFRDemNnaW54bnFmXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
 #### 资源负载型
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=MDhhNmFkYjQyY2U5ZjYzODZhYTFkNzI4NWQ1ODkzOTdfamJvUUZCc3U2N3RIaUVwQVVOQlNIZHRadlpPWkRGTmZfVG9rZW46SFZtdmJyT0xUbzNTcVB4OGFFdWNTd3o2bmZjXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2FlMDAzOWI5YzY5ZWM5YjQyMTBiNTQ3ZTNmYzY0ZmNfZ3V5VUNsMEE3T3BLRGx6OXhOQWFqdHZoajgwVXhwZlpfVG9rZW46SFZtdmJyT0xUbzNTcVB4OGFFdWNTd3o2bmZjXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=YzEzMGNkOTljMzhhOWExNDM1YzJjYWYxZTQwOTNhYjdfNnNINzZwaXZtMk1XNnNaZ2d6VnhqbndpZ24yOFR2eGhfVG9rZW46QnNzOGJZeE9vb082djJ4dTBsWmNPREJJbmlnXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=YzNkYjdjNDdjZjhiZjQzOGY3ODcyOThhMGE2YzRlNDNfY3FlSllmaHUzZ0hxcW8wN2Rid1VSVkpBRXlHNFgwN0JfVG9rZW46QnNzOGJZeE9vb082djJ4dTBsWmNPREJJbmlnXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=YTA1MDA3ZmM4M2ExM2EwZGYwOGJhNzAwOWZmNzMwMDZfODJYdGt3NlhNc0NrWWdBaXUyaWdFWWFqSmZuSjdUTEVfVG9rZW46Q2lDaGJTY2FYb1NzdFR4U1V2YWN1NXBabjBkXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=MWZhOWIxMDFkNjhjNTFkYzllNGIzNWEzMjA3NTEwOWNfeHVQTElXbmdzTzNYTGpKNFRKdWpxR0tLcVc2aGZnNHhfVG9rZW46Q2lDaGJTY2FYb1NzdFR4U1V2YWN1NXBabjBkXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=OGY4MDU2MjY1ZmRhYjc3MTE0NmFlNTNhN2Y0YTQ2MGZfQjVRcFhpbWpvaVUxQktkc0JWcGRjeXBEQ21pcHlVRmJfVG9rZW46S0NWaGJrbEFwb2RGN2t4SG9xN2NlaE9kblNnXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=NzFiMTY2NTY1ZGM2Y2YxZGUwNzVjOWQ2NmVmOGIzMTRfRzJmQkw0QnFuSFV4Nno2S3FqeEs5b0I5dlhKcFk4b2NfVG9rZW46S0NWaGJrbEFwb2RGN2t4SG9xN2NlaE9kblNnXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ZGQ4YmYwYjdjOGMxNGE5NTcxNGYzZDY3OGU4ZjNlZWNfZnpwQmlkMXVkV25IOEx3UlppT3lGeXFFNDR5UnZTQVpfVG9rZW46SjBwYmJ3WTR3b3IwenR4NkZGNWNqdnQ4bnNmXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=MTA1NjI0NDE1NTRhMGI3NTk0OTdlYWNkZDc2ZTk0MTJfSlpRcUxYbnhvamJsaHczRERINENzTWx6cTJZNTVERmJfVG9rZW46SjBwYmJ3WTR3b3IwenR4NkZGNWNqdnQ4bnNmXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
 #### 结论
 
@@ -415,15 +427,114 @@ return res
 
 负载均衡的数据来源为 Redis，在配置难度相同的情况下选择 Redis 可以减少项目中中间件的数量，简化开发难度，但是测试后发现非常严重的问题，这种注册中心的数据存储是 K-V 型，单独值单独键，没有层次结构，导致一个 Key 存储的数据量比较大，在服务的发现过程中会存在 BigKey 问题，但是这个 Key 的使用频率不高
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=MjU1ZmQ5OTdlZjkzNmE2ZGRmMThlMDRjODA3YmRkYTZfTTNtWFdtM0JXMGNCSGxNNmJpTnZEc3dMVTE4cG9rY0RfVG9rZW46U2NDYmJmamp4b3FhWHV4VmNidWNicEczbllkXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=NTZjZjI2NjcxODdiYmU1OTlmYThlZjE4ZWNjMGRkYTRfdEZvWHcyMkwzVDl2eGVFaVRCMTJSQ1pYbFJzek9OTHFfVG9rZW46U2NDYmJmamp4b3FhWHV4VmNidWNicEczbllkXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
-![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWIwOWQ2ODUyNzgwMjRmMDkwYmY2MDQzNGU4NzdkYzVfcTA2MjdJNUxJTVJ0c2lrRTd0TmhQZ2FKd0ozdnhVSjNfVG9rZW46QXVEUGJJVUFRbzlMUE14QlpDS2N2WUgzbjNiXzE3MzMzMDQ2Mzg6MTczMzMwODIzOF9WNA)
+![img](https://h1nj7u0kkda.feishu.cn/space/api/box/stream/download/asynccode/?code=NTFjY2E1ZjYwNWEzYjU1MTlmNWFkZTc3NzBjODkwZWNfSDBrbVBINXh6NGZvNmRRTmtjWE5mdkhvcmJCaXpFcjlfVG9rZW46QXVEUGJJVUFRbzlMUE14QlpDS2N2WUgzbjNiXzE3MzM1NTc0NDY6MTczMzU2MTA0Nl9WNA)
 
 ### Nacos
 
 虽然增加了一个单独的注册中心中间件，但是作为与 Dubbo 同公司产品，兼容性更好，后续的项目扩展性更强
 
 ## 实例健康监控
+
+对实例的负载记录，状态修改都是通过 Dubbo 组件中的 LoadBalancer 和 Filter 通过 SPI 加载实现
+
+负载均衡器选择的实例服务调用失败后会在 Redis 中增加失败的次数，当次数达到临界值时会将该实例 ID 存入待下线的 Redis set 中，监控服务会定时读取这个 set，再次尝试调用，如果任然失败则直接下线，成功则减少失败次数，当次数小于等于临界值时会恢复上线节点
+
+下线的节点信息会缓存到本地监控服务器，定时去检测实例服务是否上线，当检测通过时则恢复节点状态
+
+### 增加失败次数代码
+
+```SQL
+--- 异常次数加一
+if redis.call('INCR', KEY[1]) == ARGV[3] + 1 then
+    --- 异常次数超过预定值 加入节点到待下线节点
+    redis.call('SADD', KEY[2], ARGV[1])
+end
+
+--- 刷新 key 超时时间
+redis.call('EXPIRE', KEY[1], ARGV[2])
+```
+
+### 下线节点代码
+
+```SQL
+--- 获取对应权重
+local score = redis.call('ZMSCORE', KEY[1], ARGV[1])[1]
+if score == nil then
+    return -1
+end
+
+--- 校验权重大小
+if score >= ARGV[2] then
+    return
+end
+
+--- 增加权重
+redis.call('ZINCRBY', KEY[1], ARGV[2], ARGV[1])
+
+--- 删除待下线 set 中的信息
+redis.call('SREM', KEY[2], ARGV[1])
+```
+
+### 减少失败次数代码
+
+```SQL
+--- 降低失败次数
+local failTime = redis.call('GET', KEY[1])
+if failTime == nil then
+    return -1
+end
+
+--- 计算出降低后的失败次数
+if failTime >= 2 * ARGV[1] then
+    failTime = failTime / 2
+else
+    failTime = failTime - 1
+end
+
+if failTime > ARGV[1] then
+    --- 更新次数缓存
+    redis.call('SETEX', KEY[1], ARGV[2], failTime)
+    return 1
+end
+
+--- 节点恢复
+
+redis.call('DEL', KEY[1])
+
+--- 获取对应权重
+local score = redis.call('ZMSCORE', KEY[2], ARGV[3])[1]
+if score == nil then
+    return -1
+end
+
+--- 校验权重大小
+if score < ARGV[4] then
+    return 1
+end
+
+--- 降低权重
+redis.call('ZINCRBY', KEY[2], -ARGV[4], ARGV[3])
+```
+
+### 上线节点代码
+
+```SQL
+--- 获取对应权重
+local score = redis.call('ZMSCORE', KEY[1], ARGV[1])[1]
+if score == nil then
+    return -1
+end
+
+--- 校验权重大小
+if score < ARGV[2] then
+    return
+end
+
+--- 降低权重
+redis.call('ZINCRBY', KEY[1], -ARGV[2], ARGV[1])
+```
 
 ## 核心代码模式样板
 
