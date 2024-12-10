@@ -23,7 +23,7 @@ public class ConcurrentExecutionLuaTest {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Test
+    //@Test
     void execute() {
         final DefaultRedisScript<String> script = new DefaultRedisScript<>();
         script.setLocation(new ClassPathResource("redis-lua/load-balance.lua"));

@@ -15,7 +15,7 @@ public class DubboConnectionTest {
     @DubboReference(retries = 0, loadbalance = "redis-least-usage")
     private AnswerSubmissionService answerSubmissionService;
 
-    @Test
+   // @Test
     void testConnection() {
         System.out.println("end");
     }

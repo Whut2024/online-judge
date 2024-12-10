@@ -69,25 +69,32 @@ public class QuestionVo implements Serializable {
     private UserVo userVo;
 
     /**
-     * 程序启动引导代码
+     * 引导代码
      */
     private String coreCode;
 
+    /**
+     * 基础框架代码
+     */
+    private String baseCode;
+
     private static final long serialVersionUID = 1L;
 
-    public static QuestionVo getQuestionVo(Question question) {
-        final QuestionVo questionVo = new QuestionVo();
-        questionVo.setId(question.getId());
-        questionVo.setUserId(question.getUserId());
-        questionVo.setSubmissionNumber(question.getSubmissionNumber());
-        questionVo.setAcceptanceNumber(question.getAcceptanceNumber());
-        questionVo.setTags(JSONUtil.toBean(question.getTags(), new TypeReference<List<String>>() {}, false));
-        questionVo.setContent(question.getContent());
-        questionVo.setTitle(question.getTitle());
-        questionVo.setCoreCode(question.getCoreCode());
-        questionVo.setCreateTime(question.getCreateTime());
-        questionVo.setUpdateTime(question.getUpdateTime());
-        questionVo.setJudgeConfig(JSONUtil.toBean(question.getJudgeConfig(), JudgeConfig.class));
-        return questionVo;
+    public static QuestionVo getQuestionVo(Question q) {
+        final QuestionVo qvo = new QuestionVo();
+        qvo.setId(q.getId());
+        qvo.setUserId(q.getUserId());
+        qvo.setSubmissionNumber(q.getSubmissionNumber());
+        qvo.setAcceptanceNumber(q.getAcceptanceNumber());
+        qvo.setTags(JSONUtil.toBean(q.getTags(), new TypeReference<List<String>>() {}, false));
+        qvo.setContent(q.getContent());
+        qvo.setTitle(q.getTitle());
+        qvo.setCoreCode(q.getCoreCode());
+        qvo.setCreateTime(q.getCreateTime());
+        qvo.setUpdateTime(q.getUpdateTime());
+        qvo.setJudgeConfig(JSONUtil.toBean(q.getJudgeConfig(), JudgeConfig.class));
+        qvo.setBaseCode(q.getBaseCode());
+
+        return qvo;
     }
 }

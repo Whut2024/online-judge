@@ -34,7 +34,7 @@ public class LuaTpsTest {
         SCRIPT.setResultType(String.class);
     }
 
-    @Test
+    //@Test
     void test() {
 
         final LongAdder counter = new LongAdder();

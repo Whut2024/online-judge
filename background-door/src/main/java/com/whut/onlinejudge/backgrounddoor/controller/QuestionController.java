@@ -48,6 +48,7 @@ public class QuestionController {
         final List<JudgeCase> judgeCaseList = questionAddRequest.getJudgeCase();
         final JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
         final String coreCode = questionAddRequest.getCoreCode();
+        final String baseCode = questionAddRequest.getBaseCode();
 
         ThrowUtils.throwIf(!StrUtil.isAllNotBlank(title, content, coreCode),
                 ErrorCode.PARAMS_ERROR, "参数为NULL");
@@ -204,6 +205,7 @@ public class QuestionController {
         final JudgeConfig judgeConfig = questionUpdateRequest.getJudgeConfig();
         final String content = questionUpdateRequest.getContent();
         final String coreCode = questionUpdateRequest.getCoreCode();
+        final String baseCode = questionUpdateRequest.getBaseCode();
 
         ThrowUtils.throwIf(id == null || id < 0,
                 ErrorCode.PARAMS_ERROR, "ID 错误");

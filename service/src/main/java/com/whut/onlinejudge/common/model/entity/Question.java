@@ -4,15 +4,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * 题目表
+ *
  * @TableName t_question
  */
-@TableName(value ="t_question")
+@TableName(value = "t_question")
 @Data
 public class Question implements Serializable {
     /**
@@ -47,9 +50,14 @@ public class Question implements Serializable {
     private String judgeCase;
 
     /**
-     * 运行校验代码
+     * 引导代码
      */
     private String coreCode;
+
+    /**
+     * 基础框架代码
+     */
+    private String baseCode;
 
     /**
      * 题目运行资源限制

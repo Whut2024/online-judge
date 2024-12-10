@@ -46,6 +46,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         final List<JudgeCase> judgeCase = questionAddRequest.getJudgeCase();
         final JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
         final String coreCode = questionAddRequest.getCoreCode();
+        final String baseCode = questionAddRequest.getBaseCode();
 
         final Question question = new Question();
         question.setUserId(UserHolder.get().getId());
@@ -55,6 +56,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         question.setJudgeCase(JSONUtil.toJsonStr(judgeCase));
         question.setJudgeConfig(JSONUtil.toJsonStr(judgeConfig));
         question.setCoreCode(coreCode);
+        question.setBaseCode(baseCode);
         this.save(question);
 
         return question.getId();
@@ -158,6 +160,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         final JudgeConfig judgeConfig = questionUpdateRequest.getJudgeConfig();
         final String content = questionUpdateRequest.getContent();
         final String coreCode = questionUpdateRequest.getCoreCode();
+        final String baseCode = questionUpdateRequest.getBaseCode();
 
 
         // 查询出对应题目
@@ -182,6 +185,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
             question.setJudgeConfig(JSONUtil.toJsonStr(judgeConfig));
         question.setContent(content);
         question.setCoreCode(coreCode);
+        question.setBaseCode(baseCode);
 
         return this.updateById(question);
     }

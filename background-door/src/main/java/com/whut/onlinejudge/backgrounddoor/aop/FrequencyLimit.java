@@ -20,7 +20,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author liuqiao
  * @since 2024-12-05
  */
-@Aspect
+//@Aspect
 @Component
 @AllArgsConstructor
 public class FrequencyLimit {
