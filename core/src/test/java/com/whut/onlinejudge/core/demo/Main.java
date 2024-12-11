@@ -64,6 +64,7 @@ public class Main {
             // 返回错误
             System.out.println(false);
             System.out.println(false);
+            return false;
         }
         return true;
     }
