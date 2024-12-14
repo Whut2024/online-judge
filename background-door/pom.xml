@@ -118,8 +118,11 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
             <version>2021.0.5.0</version>
         </dependency>
-
-
+        <!-- Spring Boot Mail Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

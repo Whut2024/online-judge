@@ -24,4 +24,7 @@ public interface RedisConstant {
     String GLOBAL_LIMIT_KEY = "global:";
 
     long GLOBAL_LIMIT_TIME = 50000L;
+
+    String OTHER_IP_KEY = "ip:other:";
+    long OTHER_IP_TIME = 30 * 60 * 1000L;
 }

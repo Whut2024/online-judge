@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 //@Aspect
 @Component
 @AllArgsConstructor
+@Order(3)
 public class FrequencyLimit {
 
     private final DistributedLockSupport lockSupport;
