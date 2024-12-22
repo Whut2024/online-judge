@@ -6,11 +6,13 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @MapperScan("com.whut.onlinejudge.core.mapper")
 @EnableDubbo(scanBasePackages = {"com.whut.onlinejudge.core.service.impl"})
 @EnableConfigurationProperties(CodeRunnerConfig.class)
+@EnableScheduling
 public class CoreApplication {
 
     public static void main(String[] args) {

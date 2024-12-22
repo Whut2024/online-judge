@@ -26,13 +26,13 @@ public class ApiTest {
                     long start = System.currentTimeMillis();
                     HttpResponse response = HttpRequest
                             .post("http://189.1.244.220:8101/api/answer_submission/do")
-                            .header("token", "9836398af3a26cea9fe788849a0f88b8")
+                            .header("token", "4708ecd51de458efa6cb0899f9543845")
                             .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                             .header("Content-Type", "application/json")
                             .header("Accept", "*/*")
                             .header("Host", "localhost:8101")
                             .header("Connection", "keep-alive")
-                            .body("{\"language\":\"java\",\"submittedCode\":\"import java.util.Random;\\n\\npublic class Solution {\\n\\n    public int add(int a, int b) {\\n        System.out.println(\\\"a = \\\" + a);\\n        System.out.println(\\\"b = \\\" + b);\\n        final byte[] bytes = new byte[1024]; // 1KB\\n        try {\\n            Thread.sleep(new Random().nextInt(10) * 200L);\\n        } catch (InterruptedException e) {\\n            throw new RuntimeException(e);\\n        }\\n        return a + b;\\n    }\\n}\",\"questionId\":\"1864232331863179266\"}")
+                            .body("{\"language\":\"java\",\"submittedCode\":\"\\tclass Solution {\\n\\n    public int add(int a, int b) {\\n        // write your code here\\n        return a + b;\\n    }\\n}\",\"questionId\":\"1866132260452188161\"}")
                             .execute();
 
                     System.out.println(new String(response.bodyBytes(), StandardCharsets.UTF_8) + "请求消耗时间 " +
@@ -48,6 +48,6 @@ public class ApiTest {
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
-                System.out.println("平均 QPS = " + (adder.sum() * 1000 / (System.currentTimeMillis() - processStart)))));
+                System.out.println("平均 TPS = " + (adder.sum() * 1000 / (System.currentTimeMillis() - processStart)))));
     }
 }
