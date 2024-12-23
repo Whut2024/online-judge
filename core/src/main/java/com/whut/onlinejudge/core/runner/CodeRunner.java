@@ -3,7 +3,6 @@ package com.whut.onlinejudge.core.runner;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import com.whut.onlinejudge.common.constant.RedisLoadBalanceConstant;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
@@ -14,15 +13,9 @@ import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 import com.whut.onlinejudge.core.util.LocalCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 运行引导代码和用户提交的代码的类
@@ -36,11 +29,6 @@ public abstract class CodeRunner {
     @Autowired
     private CodeRunnerConfig codeRunnerConfig;
 
-    private final LongAdder counterAdder = new LongAdder();
-
-    private final LongAdder timeAdder = new LongAdder();
-
-
     /**
      * @param language      编程语言
      * @param submittedCode 用户提交的代码
@@ -48,9 +36,10 @@ public abstract class CodeRunner {
      * @param judgeConfig   运行现状条件
      * @param judgeCaseList 代码输入和输出
      * @return 运行过程中的异常和资源消耗
+     * 这个方法要被代理增强，不能被 final 修饰
      */
-    public final JudgeInfo run(String language, String submittedCode, String coreCode,
-                               JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+    public JudgeInfo run(String language, String submittedCode, String coreCode,
+                         JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
@@ -61,8 +50,6 @@ public abstract class CodeRunner {
                 prefix)) {
             // 编译失败
             FileUtil.del(prefix);
-            redisTemplate.opsForZSet().incrementScore(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, -1f);
-            counterAdder.increment();
             return JudgeInfo.zeroLimit(RunnerStatusEnum.COMPILE_FAIL);
         }
 
@@ -75,12 +62,6 @@ public abstract class CodeRunner {
 
 
         this.extractOutput(executeAndGetOutput(command, prefix, judgeConfig, judgeCaseList), runnerContext);
-
-        // 减少负载记录
-        redisTemplate.opsForZSet().incrementScore(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, -1f);
-        counterAdder.increment();
-        if (runnerContext.getTimeLimit() != null)
-            timeAdder.add(runnerContext.getTimeLimit());
 
         // 删除文件夹
         FileUtil.del(prefix);
@@ -173,35 +154,5 @@ public abstract class CodeRunner {
         runnerContext.setOutput(builder.toString());
     }
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
 
-    private final static DefaultRedisScript<Void> LOGOUT_NODE_SCRIPT;
-
-    private String machineId;
-
-    static {
-        LOGOUT_NODE_SCRIPT = new DefaultRedisScript<>();
-        LOGOUT_NODE_SCRIPT.setLocation(new ClassPathResource("redis-lua/logout_node.lua"));
-    }
-
-    @PostConstruct
-    void init() {
-        machineId = codeRunnerConfig.getMachineId();
-        // 注册当前服务器到 redis 的负载均衡 sorted_set 中
-        final Boolean absent = redisTemplate.opsForZSet().addIfAbsent(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, 0f);
-        if (Boolean.FALSE.equals(absent)) {
-            log.error("当前 machine id 已经存在");
-            Runtime.getRuntime().exit(-1);
-        }
-
-        // 程序推出时删除节点
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            redisTemplate.execute(LOGOUT_NODE_SCRIPT,
-                    Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
-                    machineId);
-            log.warn("处理请求数 {}", counterAdder.sum());
-            log.warn("用户代码运行时间 {}", timeAdder.sum());
-        }));
-    }
 }

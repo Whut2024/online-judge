@@ -102,6 +102,12 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
             <version>2021.0.5.0</version>
         </dependency>
+
+        <!--aop-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
