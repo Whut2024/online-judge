@@ -8,13 +8,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
 
 /**
  * @author liuqiao
@@ -28,15 +25,8 @@ public class LoadBalanceAdvisor {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    private final static DefaultRedisScript<Void> LOGOUT_NODE_SCRIPT;
-
-    @Value("code-runner.machineId")
+    @Value("${code-runner.machine-id}")
     private String machineId;
-
-    static {
-        LOGOUT_NODE_SCRIPT = new DefaultRedisScript<>();
-        LOGOUT_NODE_SCRIPT.setLocation(new ClassPathResource("redis-lua/logout_node.lua"));
-    }
 
     @PostConstruct
     void init() {
@@ -48,12 +38,13 @@ public class LoadBalanceAdvisor {
         }
 
         // 程序推出时删除节点
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> redisTemplate.execute(LOGOUT_NODE_SCRIPT,
-                Collections.singletonList(RedisLoadBalanceConstant.MIN_HEAP_KEY),
-                machineId)));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            redisTemplate.opsForZSet().remove(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId);
+            log.info("{} 已经从负载均衡队列中删除", machineId);
+        }));
     }
 
-    @Around("execution(* com.whut.onlinejudge.core.runner.CodeRunner.run())")
+    @Around("execution(* com.whut.onlinejudge.core.runner.CodeRunner.run(..))")
     public Object loadBalance(ProceedingJoinPoint joinPoint) {
         // 刷新负载时间
         InvokeBalanceCheck.update();
