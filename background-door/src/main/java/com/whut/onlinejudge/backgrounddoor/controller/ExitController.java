@@ -1,5 +1,7 @@
 package com.whut.onlinejudge.backgrounddoor.controller;
 
+import com.whut.onlinejudge.backgrounddoor.common.BaseResponse;
+import com.whut.onlinejudge.backgrounddoor.common.ResultUtils;
 import com.whut.onlinejudge.backgrounddoor.mail.MailTemplate;
 import com.whut.onlinejudge.backgrounddoor.utils.UserHolder;
 import com.whut.onlinejudge.common.model.entity.User;
@@ -26,20 +28,28 @@ public class ExitController {
 
 
     @GetMapping("/exit")
-    public void over() {
+    public BaseResponse<Boolean> over() {
         final User user = UserHolder.get();
         if (!UserRoleEnum.isAdmin(user)) {
-            return;
+            return ResultUtils.success(Boolean.FALSE);
         }
 
         log.error("an admin whose id is {} executes exiting program", user.getId());
 
         try {
-            mailTemplate.notice("an admin whose id is " + user.getId() + " executes exiting program", "OJ DOOR SERVICE IS STOPPING");
+            mailTemplate.notice("OJ DOOR SERVICE IS STOPPING", "an admin whose id is " + user.getId() + " executes exiting program");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
 
-        System.exit(0);
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.exit(0);
+        }).start();
+        return ResultUtils.success(Boolean.TRUE);
     }
 }
