@@ -26,7 +26,7 @@ public class ApiTest {
                     long start = System.currentTimeMillis();
                     HttpResponse response = HttpRequest
                             .post("http://189.1.244.220:8101/api/answer_submission/do")
-                            .header("token", "4708ecd51de458efa6cb0899f9543845")
+                            .header("token", "92cb951b1b708ad710612633201bc1e9")
                             .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                             .header("Content-Type", "application/json")
                             .header("Accept", "*/*")
