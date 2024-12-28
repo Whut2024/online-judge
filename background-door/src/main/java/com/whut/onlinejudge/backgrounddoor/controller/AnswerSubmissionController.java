@@ -10,6 +10,7 @@ import com.whut.onlinejudge.backgrounddoor.constant.MysqlConstant;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionAddRequest;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionQueryRequest;
+import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.enums.LanguageEnum;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
@@ -34,7 +35,7 @@ public class AnswerSubmissionController {
     private final AnswerSubmissionService answerSubmissionService;
 
     @PostMapping("/do")
-    public BaseResponse<Long> doQuestionSubmit(@RequestBody AnswerSubmissionAddRequest answerSubmissionAddRequest) {
+    public BaseResponse<JudgeInfo> doQuestionSubmit(@RequestBody AnswerSubmissionAddRequest answerSubmissionAddRequest) {
         ThrowUtils.throwIf(answerSubmissionAddRequest == null,
                 ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final Long questionId = answerSubmissionAddRequest.getQuestionId();

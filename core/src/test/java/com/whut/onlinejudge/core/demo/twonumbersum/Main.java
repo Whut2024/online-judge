@@ -51,6 +51,7 @@ public class Main {
      */
     private static void occurException(Throwable e) {
         // 出现异常
+        e.printStackTrace(System.out);
         System.out.println(e);
         System.out.println(true);
         System.out.println(false);

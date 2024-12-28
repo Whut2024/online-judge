@@ -11,6 +11,7 @@ import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 */
 public interface AnswerSubmissionMapper extends BaseMapper<AnswerSubmission> {
 
+    AnswerSubmission getSubmittedCodeLanguageQuestionId(Long asId);
 }
 
 

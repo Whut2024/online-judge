@@ -5,22 +5,23 @@
 <mapper namespace="com.whut.onlinejudge.core.mapper.AnswerSubmissionMapper">
 
     <resultMap id="BaseResultMap" type="com.whut.onlinejudge.common.model.entity.AnswerSubmission">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="questionId" column="question_id" jdbcType="BIGINT"/>
-            <result property="submittedCode" column="submitted_code" jdbcType="VARCHAR"/>
-            <result property="judgeInfo" column="judge_info" jdbcType="VARCHAR"/>
-            <result property="language" column="language" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="questionId" column="question_id" jdbcType="BIGINT"/>
+        <result property="submittedCode" column="submitted_code" jdbcType="VARCHAR"/>
+        <result property="judgeInfo" column="judge_info" jdbcType="VARCHAR"/>
+        <result property="language" column="language" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id,user_id,question_id,
-        submitted_code,judge_info,language,
-        status,create_time,update_time,
-        is_delete
-    </sql>
+    <select id="getSubmittedCodeLanguageQuestionId"
+            resultType="com.whut.onlinejudge.common.model.entity.AnswerSubmission">
+        select submitted_code, language, question_id
+        from t_answer_submission
+        where id = #{asId}
+          and is_delete = 0;
+    </select>
 </mapper>

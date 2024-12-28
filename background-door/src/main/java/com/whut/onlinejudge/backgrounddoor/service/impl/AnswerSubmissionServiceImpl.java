@@ -45,7 +45,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
     private final JudgeStrategy judgeStrategy;
 
     @Override
-    public Long doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest) {
+    public JudgeInfo doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest) {
         final Long questionId = answerSubmissionAddRequest.getQuestionId();
         final String submittedCode = answerSubmissionAddRequest.getSubmittedCode();
         final String language = answerSubmissionAddRequest.getLanguage();
@@ -70,9 +70,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         as.setUserId(userId);
         this.save(as);
 
-        final JudgeInfo judgeInfo = judgeStrategy.judge(as.getId());
-
-        return 0L;
+        return judgeStrategy.judge(as.getId());
     }
 
     @Override

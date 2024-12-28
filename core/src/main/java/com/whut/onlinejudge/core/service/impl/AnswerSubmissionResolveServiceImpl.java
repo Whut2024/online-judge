@@ -8,9 +8,9 @@ import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
-import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
 import com.whut.onlinejudge.core.judge.CoreJudgeStrategy;
+import com.whut.onlinejudge.core.mapper.AnswerSubmissionMapper;
 import lombok.AllArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 
@@ -26,17 +26,14 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
 
     private final QuestionService questionService;
 
-    private final AnswerSubmissionService answerSubmissionService;
+    private final AnswerSubmissionMapper asMapper;
 
     private final CoreJudgeStrategy coreJudgeStrategy;
 
     @Override
     public JudgeInfo resolve(Long asId) {
         // 校验相关答案提交
-        final LambdaQueryWrapper<AnswerSubmission> asWrapper = new LambdaQueryWrapper<>();
-        asWrapper.eq(AnswerSubmission::getId, asId);
-        asWrapper.select(AnswerSubmission::getSubmittedCode, AnswerSubmission::getLanguage, AnswerSubmission::getQuestionId);
-        AnswerSubmission as = answerSubmissionService.getOne(asWrapper);
+        final AnswerSubmission as = asMapper.getSubmittedCodeLanguageQuestionId(asId);
 
         if (as == null) {
             final JudgeInfo judgeInfo = new JudgeInfo();
@@ -73,6 +70,6 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
         as.setSubmittedCode(null);
         as.setLanguage(null);
         as.setQuestionId(null);
-        answerSubmissionService.updateById(as);
+        asMapper.updateById(as);
     }
 }
