@@ -47,7 +47,7 @@ public class OtherIpNoticeAdvisor {
 
     static {
         NOTE_IP = new DefaultRedisScript<>();
-        NOTE_IP.setScriptText("if not redis.call('get', KEYS[1]) == nil then redis.call('expire', KEYS[1], ARGV[1]) return 0 end redis.call('setex', KEYS[1], ARGV[1], 1)");
+        NOTE_IP.setScriptText("if not redis.call('get', KEYS[1]) == nil then redis.call('expire', KEYS[1], ARGV[1]) return 0 end redis.call('setex', KEYS[1], ARGV[1], 1) return 1");
         NOTE_IP.setResultType(Long.class);
         /**
          * if not redis.call('get', KEYS[1]) == nil then
@@ -55,6 +55,7 @@ public class OtherIpNoticeAdvisor {
          *     return 0
          * end
          * redis.call('setex', KEYS[1], ARGV[1], 1)
+         * return 1
          */
 
         selfIpSet = new HashSet<>(16);
@@ -89,7 +90,8 @@ public class OtherIpNoticeAdvisor {
 
         if (redisTemplate.execute(NOTE_IP,
                 Collections.singletonList(RedisConstant.OTHER_IP_KEY + ip), // key 1
-                TimeUnit.MILLISECONDS.toSeconds(RedisConstant.OTHER_IP_TIME)) == 0) {
+                String.valueOf(TimeUnit.MILLISECONDS.toSeconds(RedisConstant.OTHER_IP_TIME)) // argv 1
+        ) == 0) {
             // ip 已经存在
             return;
         }
