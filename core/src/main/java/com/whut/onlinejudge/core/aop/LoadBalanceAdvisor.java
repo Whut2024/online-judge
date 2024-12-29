@@ -33,8 +33,9 @@ public class LoadBalanceAdvisor {
         // 注册当前服务器到 redis 的负载均衡 sorted_set 中
         final Boolean absent = redisTemplate.opsForZSet().addIfAbsent(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, 0f);
         if (Boolean.FALSE.equals(absent)) {
-            log.error("当前 machine id 已经存在");
-            Runtime.getRuntime().exit(-1);
+            log.error("当前 machine id 已经存在,重新设置负载为 0");
+            redisTemplate.opsForZSet().add(RedisLoadBalanceConstant.MIN_HEAP_KEY, machineId, 0f);
+            //Runtime.getRuntime().exit(-1);
         }
 
         // 程序推出时删除节点
