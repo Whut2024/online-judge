@@ -80,12 +80,9 @@ public abstract class CodeRunner {
     protected final JudgeInfo extractContext(CodeRunnerContext runnerContext) {
         final JudgeInfo judgeInfo = JudgeInfo.zeroLimit(RunnerStatusEnum.INNER);
         judgeInfo.setMessage(runnerContext.getOutput());
-        if (StrUtil.isBlank(runnerContext.getException())) {
-            // 正常运行
-            judgeInfo.setMemory(runnerContext.getMemoryLimit());
-            judgeInfo.setTime(runnerContext.getTimeLimit());
-        } else
-            judgeInfo.setException(runnerContext.getException());
+        judgeInfo.setMemory(runnerContext.getMemoryLimit());
+        judgeInfo.setTime(runnerContext.getTimeLimit());
+        judgeInfo.setException(runnerContext.getException());
 
         return judgeInfo;
     }
