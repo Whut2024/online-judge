@@ -1,5 +1,6 @@
 package com.whut.onlinejudge.core.runner.local;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
@@ -54,6 +55,17 @@ public class LocalCodeRunner extends CodeRunner {
         // 输出-没有异常-未通过
         // 输出-异常-有异常-未通过
         // 输出-内存-时间-通过
-        return IoUtil.readLines(process.getInputStream(), StandardCharsets.UTF_8, new ArrayList<>());
+        final List<String> resList = IoUtil.readLines(process.getInputStream(), StandardCharsets.UTF_8, new ArrayList<>());
+        final List<String> errorList = IoUtil.readLines(process.getErrorStream(), StandardCharsets.UTF_8, new ArrayList<>());
+        final StringBuilder builder;
+        if (CollectionUtil.isNotEmpty(errorList)) {
+            builder = new StringBuilder(128);
+            for (int i = 0; i < errorList.size() - 1; i++) {
+                builder.append(errorList.get(i)).append('\n');
+            }
+            resList.set(resList.size() - 3, builder.toString());
+        }
+
+        return resList;
     }
 }

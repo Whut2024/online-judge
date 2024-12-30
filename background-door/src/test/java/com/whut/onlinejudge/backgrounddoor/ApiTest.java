@@ -26,13 +26,13 @@ public class ApiTest {
                     long start = System.currentTimeMillis();
                     HttpResponse response = HttpRequest
                             .post("http://189.1.244.220:8101/api/answer_submission/do")
-                            .header("token", "92cb951b1b708ad710612633201bc1e9")
+                            .header("token", "84eca9a134bd54fd532b0985105c1352")
                             .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                             .header("Content-Type", "application/json")
                             .header("Accept", "*/*")
                             .header("Host", "localhost:8101")
                             .header("Connection", "keep-alive")
-                            .body("{\"language\":\"java\",\"submittedCode\":\"\\tclass Solution {\\n\\n    public int add(int a, int b) {\\n        // write your code here\\n        return a + b;\\n    }\\n}\",\"questionId\":\"1866132260452188161\"}")
+                            .body("{\"language\":\"java\",\"submittedCode\":\"import java.util.*;\\nclass Solution {\\n    public int[] twoSum(int[] nums, int target) {\\n        HashMap<Integer, Integer> map = new HashMap<>();\\n        int need;\\n        for (int i = 0; i < nums.length; i++) {\\n            need = target - nums[i];\\n            if (map.containsKey(need)) return new int[] {i, map.get(need)};\\n            map.put(nums[i], i);\\n        }\\n\\n        return new int[0];\\n    }\\n}\",\"questionId\":\"1872929013556322306\"}")
                             .execute();
 
                     System.out.println(new String(response.bodyBytes(), StandardCharsets.UTF_8) + "请求消耗时间 " +

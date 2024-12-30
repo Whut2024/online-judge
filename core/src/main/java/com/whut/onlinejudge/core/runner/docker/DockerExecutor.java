@@ -1,5 +1,6 @@
 package com.whut.onlinejudge.core.runner.docker;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.ExecCreateCmdResponse;
@@ -126,12 +127,18 @@ public class DockerExecutor implements Condition {
                 .exec();
 
         final List<String> outputList = new ArrayList<>();
+        final String[] errStr = {null};
         @SuppressWarnings("all") final ExecStartResultCallback execStartResultCallback = new ExecStartResultCallback() {
             @Override
             public void onNext(Frame frame) {
                 final String e = new String(frame.getPayload());
-                if (!e.equals("\n"))
-                    Collections.addAll(outputList, e.split("\n"));
+                if (!e.equals("\n")) {
+                    if (StreamType.STDERR.equals(frame.getStreamType())) {
+                        errStr[0] = e;
+                    } else {
+                        Collections.addAll(outputList, e.split("\n"));
+                    }
+                }
 
                 super.onNext(frame);
             }
@@ -146,7 +153,9 @@ public class DockerExecutor implements Condition {
             throw new RuntimeException(e);
         }
 
-
+        if (StrUtil.isNotBlank(errStr[0])) {
+            outputList.set(outputList.size() - 3, errStr[0]);
+        }
         return outputList;
     }
 }

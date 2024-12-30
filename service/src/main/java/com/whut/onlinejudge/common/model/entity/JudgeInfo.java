@@ -1,7 +1,6 @@
 package com.whut.onlinejudge.common.model.entity;
 
 import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,6 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class JudgeInfo implements Serializable {
 
     /**
@@ -27,11 +25,22 @@ public class JudgeInfo implements Serializable {
     private Integer memory;
 
     /**
-     * 程序运行而外信息
+     * 程序运行的输出流
      */
     private String message;
 
+    /**
+     * 程序出现的异常
+     */
+    private String exception;
+
     public static JudgeInfo zeroLimit(RunnerStatusEnum runnerStatusEnum) {
-        return new JudgeInfo(0, 0, runnerStatusEnum.getName());
+        return new JudgeInfo(runnerStatusEnum.getName(), 0, 0);
+    }
+
+    public JudgeInfo(String exception, Integer memory, Integer time) {
+        this.exception = exception;
+        this.memory = memory;
+        this.time = time;
     }
 }

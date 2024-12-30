@@ -51,8 +51,8 @@ public class Main {
      */
     private static void occurException(Throwable e) {
         // 出现异常
-        e.printStackTrace(System.out);
-        System.out.println(e);
+        e.printStackTrace(System.err);
+        System.out.println(" ");
         System.out.println(true);
         System.out.println(false);
     }
@@ -61,7 +61,6 @@ public class Main {
      * 测试通过时输出相关的内存消耗和时间消耗
      */
     private static void pass(int caseNumber) {
-        System.out.print("pass");
         long useMemory = (startMemory - runtime.freeMemory()) / 1024;
         if (useMemory == 0) {
             useMemory = (long) (Math.random() * 100);
