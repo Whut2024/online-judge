@@ -12,7 +12,7 @@ public class JavaCommandGenerator extends AbstractCommandGenerator {
 
     @Override
     public String getCompilationCommand(Object args) {
-        return "";
+        return "javac -d %s -encoding utf-8 %s %s";
     }
 
     protected JavaCommandGenerator() {

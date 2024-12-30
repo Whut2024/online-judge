@@ -43,14 +43,18 @@ public abstract class CodeRunner {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
-        if (!LocalCodeUtil.compile(language, submittedCode, coreCode,
+        final String error = LocalCodeUtil.compile(language, submittedCode, coreCode,
                 prefix + JavaCodeConstant.SOLUTION_NAME,
                 prefix + JavaCodeConstant.MAIN_NAME,
                 prefix + JavaCodeConstant.SOLUTION_CLASS_NAME,
-                prefix)) {
+                prefix);
+        if (StrUtil.isNotBlank(error)) {
             // 编译失败
             FileUtil.del(prefix);
-            return JudgeInfo.zeroLimit(RunnerStatusEnum.COMPILE_FAIL);
+            final JudgeInfo compiledFailJudgeInfo = JudgeInfo.zeroLimit(RunnerStatusEnum.COMPILE_FAIL);
+            compiledFailJudgeInfo.setMessage("");
+            compiledFailJudgeInfo.setException(error);
+            return compiledFailJudgeInfo;
         }
 
 
@@ -127,6 +131,9 @@ public abstract class CodeRunner {
         final int size = outputList.size();
         final boolean pass = JavaCodeConstant.TRUE.equals(outputList.get(size - 1));
         int outputSize = -1;
+
+        // 设置异常为 ""
+        runnerContext.setException("");
         if (pass) {
             // 通过
             runnerContext.setPass(true);
@@ -134,20 +141,24 @@ public abstract class CodeRunner {
             runnerContext.setTimeLimit(Integer.parseInt(outputList.get(size - 2)));
             outputSize = size - 3;
         } else {
+            runnerContext.setTimeLimit(0);
+            runnerContext.setMemoryLimit(0);
             // 没有通过
             if (JavaCodeConstant.TRUE.equals(outputList.get(size - 2))) {
                 // 异常
                 runnerContext.setException(outputList.get(size - 3));
                 outputSize = size - 3;
-            } else
+            } else {
                 // 没有异常
                 outputSize = size - 2;
-
+            }
         }
+
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < outputSize; i++) {
             builder.append(outputList.get(i)).append("\n");
         }
+
         runnerContext.setOutput(builder.toString());
     }
 
