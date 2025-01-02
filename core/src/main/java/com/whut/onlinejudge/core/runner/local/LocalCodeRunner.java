@@ -31,11 +31,13 @@ public class LocalCodeRunner extends CodeRunner {
     private final Runtime runtime = Runtime.getRuntime();
 
     @Override
-    protected List<String> executeAndGetOutput(String command, String prefix,
+    protected List<String> executeAndGetOutput(String command,
                                                JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         final Process process;
         try {
-            process = runtime.exec(String.format(command, prefix, getInputArgs(judgeConfig, judgeCaseList)));
+            process = runtime.exec(command);
+            // 设置参数相关的输入流
+            IoUtil.write(process.getOutputStream(), StandardCharsets.UTF_8, true, getOutputList(judgeConfig, judgeCaseList).toArray());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

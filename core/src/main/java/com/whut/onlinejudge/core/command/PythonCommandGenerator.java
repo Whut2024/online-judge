@@ -6,12 +6,12 @@ package com.whut.onlinejudge.core.command;
  */
 public class PythonCommandGenerator extends AbstractCommandGenerator {
     @Override
-    public String getExecutionCommand(Object args) {
+    public String getExecutionCommand(String prefix) {
         return "java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s";
     }
 
     @Override
-    public String getCompilationCommand(Object args) {
+    public String getCompilationCommand(String prefix) {
         return "";
     }
 

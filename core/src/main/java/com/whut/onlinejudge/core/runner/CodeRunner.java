@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,11 +44,7 @@ public abstract class CodeRunner {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
-        final String error = LocalCodeUtil.compile(language, submittedCode, coreCode,
-                prefix + JavaCodeConstant.SOLUTION_NAME,
-                prefix + JavaCodeConstant.MAIN_NAME,
-                prefix + JavaCodeConstant.SOLUTION_CLASS_NAME,
-                prefix);
+        final String error = LocalCodeUtil.compile(language, submittedCode, coreCode, prefix);
         if (StrUtil.isNotBlank(error)) {
             // 编译失败
             FileUtil.del(prefix);
@@ -60,12 +57,12 @@ public abstract class CodeRunner {
 
         // 代码执行
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
-        final String command = CommandFactory.getExecutionCommand(language);
+        final String command = CommandFactory.getExecutionCommand(language, prefix);
         if (command == null)
             return JudgeInfo.zeroLimit(RunnerStatusEnum.LANGUAGE_ERROR);
 
 
-        this.extractOutput(executeAndGetOutput(command, prefix, judgeConfig, judgeCaseList), runnerContext);
+        this.extractOutput(executeAndGetOutput(command, judgeConfig, judgeCaseList), runnerContext);
 
         // 删除文件夹
         FileUtil.del(prefix);
@@ -75,7 +72,7 @@ public abstract class CodeRunner {
     /**
      * 运行代码获取程序输出
      */
-    protected abstract List<String> executeAndGetOutput(String command, String prefix,
+    protected abstract List<String> executeAndGetOutput(String command,
                                                         JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList);
 
     /**
@@ -92,36 +89,41 @@ public abstract class CodeRunner {
     }
 
     /**
-     * @return 内存 时间 测试案例个数 测试案例
+     * out 内存 时间 测试案例个数 测试案例
      */
-    protected final String getInputArgs(JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
-        StringBuilder args = new StringBuilder();
-        args.append(judgeConfig.getMemoryLimit()); // 内存
-        args.append(" ");
-        args.append(judgeConfig.getTimeLimit()); // 时间
-        if (CollectionUtil.isNotEmpty(judgeCaseList)) {
-            args.append(" ");
-            args.append(judgeCaseList.size()); // 个数
-            // 测试案例
-            if (StrUtil.isNotBlank(judgeCaseList.get(0).getOutput())) {
-                for (JudgeCase judgeCase : judgeCaseList) {
-                    args.append(" ");
-                    args.append(judgeCase.getInput());
-                    args.append(" ");
-                    args.append(judgeCase.getOutput());
-                }
-            } else {
-                for (JudgeCase judgeCase : judgeCaseList) {
-                    args.append(" ");
-                    args.append(judgeCase.getInput()); // 个数
-                }
-            }
-        } else {
-            args.append(" ");
-            args.append(0);
+    protected final List<String> getOutputList(JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+        final char newLine = '\n';
+        List<String> args = new ArrayList<>(3 + judgeCaseList.size() * 2);
+        args.add(String.valueOf(judgeConfig.getMemoryLimit()) + newLine); // 内存
+        args.add(String.valueOf(judgeConfig.getTimeLimit()) + newLine); // 时间
+
+        if (CollectionUtil.isEmpty(judgeCaseList)) {
+            // 没有输入输出
+            args.add("0" + newLine);
+            return args;
         }
 
-        return args.toString();
+        args.add(String.valueOf(judgeCaseList.size()) + newLine); // 个数
+
+        // 测试案例输入
+        for (JudgeCase judgeCase : judgeCaseList) {
+            final List<String> input = judgeCase.getInput();
+            for (String s : input) {
+                args.add(s + newLine);
+            }
+        }
+
+        if (CollectionUtil.isNotEmpty(judgeCaseList.get(0).getOutput())) {
+            // 存在输出比较
+            for (JudgeCase judgeCase : judgeCaseList) {
+                final List<String> out = judgeCase.getOutput();
+                for (String s : out) {
+                    args.add(s + newLine);
+                }
+            }
+        }
+
+        return args;
     }
 
     /**

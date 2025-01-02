@@ -8,12 +8,12 @@ package com.whut.onlinejudge.core.command;
 public abstract class AbstractCommandGenerator {
 
     /**
-     * @param args 这个参数留给以后扩展
+     * @param prefix 源文件的目录
      */
-    public abstract String getExecutionCommand(Object args);
+    public abstract String getExecutionCommand(String prefix);
 
     /**
-     * @param args 这个参数留给以后扩展
+     * @param prefix 源文件的目录
      */
-    public abstract String getCompilationCommand(Object args);
+    public abstract String getCompilationCommand(String prefix);
 }

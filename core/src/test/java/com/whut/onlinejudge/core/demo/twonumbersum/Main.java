@@ -1,5 +1,8 @@
 package com.whut.onlinejudge.core.demo.twonumbersum;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.TypeReference;
+
 import java.util.*;
 
 /**
@@ -60,7 +63,7 @@ public class Main {
     /**
      * 测试通过时输出相关的内存消耗和时间消耗
      */
-    private static void pass(int caseNumber) {
+    private static void pass() {
         long useMemory = (startMemory - runtime.freeMemory()) / 1024;
         if (useMemory == 0) {
             useMemory = (long) (Math.random() * 100);
@@ -91,41 +94,37 @@ public class Main {
 
     public static void main(String[] args) {
         // 固定
-        memoryLimit = Integer.parseInt(args[0]);
-        timeLimit = Integer.parseInt(args[1]);
-        final int caseNumber = Integer.parseInt(args[2]);
+        final Scanner scanner = new Scanner(System.in);
+        memoryLimit = Integer.parseInt(scanner.next());
+        timeLimit = Integer.parseInt(scanner.next());
+        final int caseNumber = Integer.parseInt(scanner.next());
         final Solution solution = new Solution();
+
 
         // 变化//
         // target array-len number..... answer-number1 answer-number2
-        int offset = 3;
-        final List<List<Integer>> numsList = new ArrayList<>(caseNumber);
-        final List<Integer> targetList = new ArrayList<>(caseNumber);
-        final List<List<Integer>> answerList = new ArrayList<>(caseNumber);
+        final int[][] numsArray = new int[caseNumber][];
+        final int[] targetArray = new int[caseNumber];
+        final int[][] answerArray = new int[caseNumber][2];
 
         for (int i = 0; i < caseNumber; i++) {
-            targetList.add(Integer.valueOf(args[offset++]));
-            final int len = Integer.parseInt(args[offset++]);
-            final List<Integer> nums = new ArrayList<>();
-            for (int j = 0; j < len; j++) {
-                nums.add(Integer.valueOf(args[offset++]));
-            }
-            numsList.add(nums);
-            answerList.add(Arrays.asList(Integer.valueOf(args[offset++]), Integer.valueOf(args[offset++])));
+            String next = scanner.next();
+            numsArray[i] = JSON.parseObject(next, new TypeReference<int[]>() {});
+            next = scanner.next();
+            targetArray[i]= Integer.parseInt(next);
         }
+
+        for (int i = 0; i < caseNumber; i++) {
+            String next = scanner.next();
+            answerArray[i] = JSON.parseObject(next, new TypeReference<int[]>() {});
+        }
+
         startTime = System.currentTimeMillis();
         startMemory = runtime.freeMemory();
         try {
             for (int i = 0; i < caseNumber; i++) {
-                final List<Integer> numList = numsList.get(i);
-                final int[] nums = new int[numList.size()];
-                for (int j = 0; j < nums.length; j++) {
-                    nums[j] = numList.get(j);
-                }
-                final int[] answer = new int[]{answerList.get(i).get(0), answerList.get(i).get(1)};
-
-                int[] src = solution.twoSum(nums, targetList.get(i));
-                if (!checkResult(src, answer))
+                int[] src = solution.twoSum(numsArray[i], targetArray[i]);
+                if (!checkResult(src, answerArray[i]))
                     return;
 
                 if (!checkMemory())
@@ -140,6 +139,6 @@ public class Main {
         }
 
         // 通过
-        pass(caseNumber);
+        pass();
     }
 }

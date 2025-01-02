@@ -24,11 +24,21 @@ public class DockerCodeRunner extends CodeRunner {
     private final DockerExecutor dockerExecutor;
 
     @Override
-    protected List<String> executeAndGetOutput(String command, String prefix,
+    protected List<String> executeAndGetOutput(String command,
                                                JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
         // 输出-没有异常-未通过
         // 输出-异常-有异常-未通过
         // 输出-内存-时间-通过
-        return dockerExecutor.execute(String.format(command, prefix, getInputArgs(judgeConfig, judgeCaseList)));
+        List<String> outputList = getOutputList(judgeConfig, judgeCaseList);
+        final String[] commandNoArgsArray = command.split(" ");
+        final int ccaLen = commandNoArgsArray.length;
+
+        final String[] commandArgsArray = new String[ccaLen + outputList.size()];
+        System.arraycopy(commandNoArgsArray, 0, commandArgsArray, 0, ccaLen);
+        for (int i = 0; i < outputList.size(); i++) {
+            commandArgsArray[i + ccaLen] = outputList.get(i);
+        }
+
+        return dockerExecutor.execute(commandArgsArray);
     }
 }

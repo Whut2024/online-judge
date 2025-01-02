@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author liuqiao
@@ -18,12 +19,12 @@ public class JudgeCase implements Serializable {
     /**
      * 参数
      */
-    private String input;
+    private List<String> input;
 
     /**
      * 返回值
      */
-    private String output;
+    private List<String> output;
 
     private final static long serialVersionUID = -1;
 }

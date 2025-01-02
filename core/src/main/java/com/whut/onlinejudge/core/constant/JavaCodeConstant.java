@@ -17,4 +17,6 @@ public interface JavaCodeConstant {
     String TRUE = "true";
 
     String FALSE = "false";
+
+    String FAST_JSON_NAME = "fastjson.jar";
 }

@@ -116,11 +116,10 @@ public class DockerExecutor implements Condition {
     }
 
 
-    public List<String> execute(String command) {
+    public List<String> execute(String[] command) {
         //执行命令并获取结果
-        final String[] cmdArray = command.split(" ");
         final ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(containerId)
-                .withCmd(cmdArray)
+                .withCmd(command)
                 .withAttachStderr(true)
                 .withAttachStdin(true)
                 .withAttachStdout(true)

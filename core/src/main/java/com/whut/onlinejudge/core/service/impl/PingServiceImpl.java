@@ -11,6 +11,7 @@ import com.whut.onlinejudge.core.runner.CodeRunner;
 import lombok.AllArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,8 +40,8 @@ public class PingServiceImpl implements PingService {
         judgeConfig.setMemoryLimit(1000);
         judgeConfig.setMemoryLimit(1024 * 1024);
         MOCK_JUDGE_CONFIG = judgeConfig;
-        MOCK_JUDGE_CASE_LIST = CollectionUtil.newArrayList(new JudgeCase(RedisLoadBalanceConstant.MOCK_SIGN,
-                RedisLoadBalanceConstant.MOCK_SIGN));
+        MOCK_JUDGE_CASE_LIST = CollectionUtil.newArrayList(new JudgeCase(Collections.singletonList(RedisLoadBalanceConstant.MOCK_SIGN),
+                Collections.singletonList(RedisLoadBalanceConstant.MOCK_SIGN)));
     }
 
     private final CodeRunner runner;

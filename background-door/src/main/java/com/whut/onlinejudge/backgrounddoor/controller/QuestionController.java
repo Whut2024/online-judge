@@ -6,18 +6,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whut.onlinejudge.backgrounddoor.annotation.TimeLimit;
 import com.whut.onlinejudge.backgrounddoor.common.BaseResponse;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
+import com.whut.onlinejudge.backgrounddoor.common.ResultUtils;
 import com.whut.onlinejudge.backgrounddoor.constant.JudgeConstant;
 import com.whut.onlinejudge.backgrounddoor.constant.MysqlConstant;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
 import com.whut.onlinejudge.common.model.dto.DeleteRequest;
-import com.whut.onlinejudge.backgrounddoor.common.ResultUtils;
 import com.whut.onlinejudge.common.model.dto.question.QuestionAddRequest;
 import com.whut.onlinejudge.common.model.dto.question.QuestionQueryRequest;
 import com.whut.onlinejudge.common.model.dto.question.QuestionUpdateRequest;
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
-import com.whut.onlinejudge.common.model.vo.QuestionVo;
 import com.whut.onlinejudge.common.model.entity.Question;
+import com.whut.onlinejudge.common.model.vo.QuestionVo;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -70,14 +70,14 @@ public class QuestionController {
                         judgeConfig == null,
                 ErrorCode.PARAMS_ERROR, "测试案例或者测试条件为NULL");
         int jcTotalLength = 0;
-        String x;
+        List<String> x;
         for (JudgeCase judgeCase : judgeCaseList) {
             x = judgeCase.getInput();
-            if (x != null)
-                jcTotalLength += x.length();
+            if (CollectionUtil.isEmpty(x))
+                jcTotalLength += x.size();
             x = judgeCase.getOutput();
             if (x != null)
-                jcTotalLength += x.length();
+                jcTotalLength += x.size();
         }
         ThrowUtils.throwIf(jcTotalLength > MysqlConstant.TEXT_MAX_LENGTH,
                 ErrorCode.PARAMS_ERROR, "测试案例过长");
@@ -228,14 +228,14 @@ public class QuestionController {
 
         if (CollectionUtil.isNotEmpty(judgeCaseList)) {
             int jcTotalLength = 0;
-            String x;
+            List<String> x;
             for (JudgeCase judgeCase : judgeCaseList) {
                 x = judgeCase.getInput();
-                if (x != null)
-                    jcTotalLength += x.length();
+                if (CollectionUtil.isEmpty(x))
+                    jcTotalLength += x.size();
                 x = judgeCase.getOutput();
                 if (x != null)
-                    jcTotalLength += x.length();
+                    jcTotalLength += x.size();
             }
             ThrowUtils.throwIf(jcTotalLength > MysqlConstant.TEXT_MAX_LENGTH,
                     ErrorCode.PARAMS_ERROR, "测试案例过长");

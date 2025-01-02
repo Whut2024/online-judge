@@ -1,6 +1,7 @@
 package com.whut.onlinejudge.core.command;
 
 import com.whut.onlinejudge.common.model.enums.LanguageEnum;
+import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 
 import java.util.HashMap;
 
@@ -22,13 +23,24 @@ public class CommandFactory {
         generatorMap.put(LanguageEnum.PYTHON.getName(), new PythonCommandGenerator());
     }
 
-    public static String getExecutionCommand(String language) {
+    public static String getExecutionCommand(String language, String prefix) {
         final AbstractCommandGenerator generator;
-        return (generator = generatorMap.get(language)) != null ? generator.getExecutionCommand(null) : null;
+        return (generator = generatorMap.get(language)) != null ? generator.getExecutionCommand(prefix) : null;
     }
 
-    public static String getCompilationCommand(String language) {
+    public static String getCompilationCommand(String language, String prefix) {
         final AbstractCommandGenerator generator;
-        return (generator = generatorMap.get(language)) != null ? generator.getCompilationCommand(null) : null;
+        return (generator = generatorMap.get(language)) != null ? generator.getCompilationCommand(prefix) : null;
+    }
+
+    /**
+     * 以后扩展可以修改成根据语言拼接
+     */
+    public static String getSubmittedSrc(String language, String prefix) {
+        return prefix + JavaCodeConstant.SOLUTION_NAME;
+    }
+
+    public static String getCoreCodeSrc(String language, String prefix) {
+        return prefix + JavaCodeConstant.MAIN_NAME;
     }
 }

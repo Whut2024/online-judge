@@ -25,20 +25,26 @@ public class LocalCodeUtil {
 
     private final static Runtime runtime = Runtime.getRuntime();
 
-    public static String compile(String language, String submittedCode, String coreCode, String submittedSrc, String coreCodeSrc, String dent, String prefix) {
+    /**
+     * 引导代码完全可以缓存在服务器本地，不用每次都读取SQL数据
+     */
+    public static String compile(String language, String submittedCode, String coreCode, String prefix) {
+        // 引导代码路径和源文件路径
+        final String submittedSrc = CommandFactory.getSubmittedSrc(language, prefix);
+        final String coreCodeSrc = CommandFactory.getCoreCodeSrc(language, prefix);
+
         // 保存源文件
         FileUtil.writeBytes(submittedCode.getBytes(StandardCharsets.UTF_8), submittedSrc);
         FileUtil.writeBytes(coreCode.getBytes(StandardCharsets.UTF_8), coreCodeSrc);
 
-        final String command = CommandFactory.getCompilationCommand(language);
+        final String command = CommandFactory.getCompilationCommand(language, prefix);
         if (command == null) // 脚本语言
             return OK;
 
         // 编译
-        final String compileCommand = String.format(command, prefix, submittedSrc, coreCodeSrc);
         final Process process;
         try {
-            process = runtime.exec(compileCommand);
+            process = runtime.exec(command);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,10 +64,8 @@ public class LocalCodeUtil {
         final List<String> errorList = IoUtil.readLines(process.getErrorStream(), StandardCharsets.UTF_8, new ArrayList<>());
         if (CollectionUtil.isNotEmpty(errorList)) {
             final StringBuilder builder = new StringBuilder(128);
-            final String start = errorList.get(0);
-            builder.append(start.substring(start.indexOf("Solution.java")));
-            for (int i = 1; i < errorList.size(); i++) {
-                builder.append(errorList.get(i));
+            for (String s : errorList) {
+                builder.append(s);
             }
             return builder.toString();
         }
