@@ -1,9 +1,11 @@
 package com.whut.onlinejudge.core.demo.twonumbersum;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * @author liuqiao
@@ -92,7 +94,7 @@ public class Main {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         // 固定
         final Scanner scanner = new Scanner(System.in);
         memoryLimit = Integer.parseInt(scanner.next());
@@ -107,16 +109,29 @@ public class Main {
         final int[] targetArray = new int[caseNumber];
         final int[][] answerArray = new int[caseNumber][2];
 
+        final JSONParser parser = new JSONParser();
+
         for (int i = 0; i < caseNumber; i++) {
             String next = scanner.next();
-            numsArray[i] = JSON.parseObject(next, new TypeReference<int[]>() {});
+            JSONArray jsonArray = (JSONArray) parser.parse(next);
+            int[] num = new int[jsonArray.size()];
+            for (int j = 0; j < jsonArray.size(); j++) {
+                num[j] = ((Long) jsonArray.get(j)).intValue();
+            }
+            numsArray[i] = num;
+
             next = scanner.next();
-            targetArray[i]= Integer.parseInt(next);
+            targetArray[i] = Integer.parseInt(next);
         }
 
         for (int i = 0; i < caseNumber; i++) {
             String next = scanner.next();
-            answerArray[i] = JSON.parseObject(next, new TypeReference<int[]>() {});
+            JSONArray jsonArray = (JSONArray) parser.parse(next);
+            int[] answer = new int[jsonArray.size()];
+            for (int j = 0; j < jsonArray.size(); j++) {
+                answer[j] = ((Long) jsonArray.get(j)).intValue();
+            }
+            answerArray[i] = answer;
         }
 
         startTime = System.currentTimeMillis();

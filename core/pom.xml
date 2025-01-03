@@ -95,12 +95,13 @@
             <artifactId>docker-java-transport-httpclient5</artifactId>
             <version>3.3.0</version>
         </dependency>
-        <!--fast json-->
+        <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
         <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>2.0.53</version>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
         </dependency>
+
         <!--nacos config-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
