@@ -45,10 +45,8 @@ public class QuestionController {
         final String title = questionAddRequest.getTitle();
         final List<String> tags = questionAddRequest.getTags();
         final String content = questionAddRequest.getContent();
-        final List<JudgeCase> judgeCaseList = questionAddRequest.getJudgeCase();
         final JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
         final String coreCode = questionAddRequest.getCoreCode();
-        final String baseCode = questionAddRequest.getBaseCode();
 
         ThrowUtils.throwIf(!StrUtil.isAllNotBlank(title, content, coreCode),
                 ErrorCode.PARAMS_ERROR, "参数为NULL");
@@ -56,31 +54,6 @@ public class QuestionController {
                         content.length() > MysqlConstant.TEXT_MAX_LENGTH ||
                         coreCode.length() > MysqlConstant.TEXT_MAX_LENGTH,
                 ErrorCode.PARAMS_ERROR, "标题或者内容过长");
-        if (CollectionUtil.isNotEmpty(tags)) {
-            int tagTotalLength = 0;
-            for (String tag : tags) {
-                if (tag != null)
-                    tagTotalLength += tag.length();
-            }
-            ThrowUtils.throwIf(tagTotalLength > 128,
-                    ErrorCode.PARAMS_ERROR, "标签过长");
-        }
-
-        ThrowUtils.throwIf(CollectionUtil.isEmpty(judgeCaseList) ||
-                        judgeConfig == null,
-                ErrorCode.PARAMS_ERROR, "测试案例或者测试条件为NULL");
-        int jcTotalLength = 0;
-        List<String> x;
-        for (JudgeCase judgeCase : judgeCaseList) {
-            x = judgeCase.getInput();
-            if (CollectionUtil.isEmpty(x))
-                jcTotalLength += x.size();
-            x = judgeCase.getOutput();
-            if (x != null)
-                jcTotalLength += x.size();
-        }
-        ThrowUtils.throwIf(jcTotalLength > MysqlConstant.TEXT_MAX_LENGTH,
-                ErrorCode.PARAMS_ERROR, "测试案例过长");
 
         final Integer memoryLimit = judgeConfig.getMemoryLimit();
         final Integer timeLimit = judgeConfig.getTimeLimit();
@@ -201,7 +174,6 @@ public class QuestionController {
         final Long id = questionUpdateRequest.getId();
         final String title = questionUpdateRequest.getTitle();
         final List<String> tags = questionUpdateRequest.getTags();
-        final List<JudgeCase> judgeCaseList = questionUpdateRequest.getJudgeCase();
         final JudgeConfig judgeConfig = questionUpdateRequest.getJudgeConfig();
         final String content = questionUpdateRequest.getContent();
         final String coreCode = questionUpdateRequest.getCoreCode();
@@ -224,21 +196,6 @@ public class QuestionController {
             }
             ThrowUtils.throwIf(tagTotalLength > 128,
                     ErrorCode.PARAMS_ERROR, "标签过长");
-        }
-
-        if (CollectionUtil.isNotEmpty(judgeCaseList)) {
-            int jcTotalLength = 0;
-            List<String> x;
-            for (JudgeCase judgeCase : judgeCaseList) {
-                x = judgeCase.getInput();
-                if (CollectionUtil.isEmpty(x))
-                    jcTotalLength += x.size();
-                x = judgeCase.getOutput();
-                if (x != null)
-                    jcTotalLength += x.size();
-            }
-            ThrowUtils.throwIf(jcTotalLength > MysqlConstant.TEXT_MAX_LENGTH,
-                    ErrorCode.PARAMS_ERROR, "测试案例过长");
         }
 
         if (judgeConfig != null) {

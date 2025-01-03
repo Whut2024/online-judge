@@ -1,6 +1,7 @@
 package com.whut.onlinejudge.common.model.dto.question;
 
 import com.whut.onlinejudge.common.model.entity.JudgeCase;
+import com.whut.onlinejudge.common.model.entity.JudgeCaseWithStringFiled;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import lombok.Data;
 
@@ -28,7 +29,7 @@ public class QuestionAddRequest implements Serializable {
     /**
      * 运行测试案例
      */
-    private List<JudgeCase> judgeCase;
+    private List<JudgeCaseWithStringFiled> judgeCase;
 
     /**
      * 题目运行资源限制
