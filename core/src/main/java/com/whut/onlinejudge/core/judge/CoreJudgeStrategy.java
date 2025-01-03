@@ -2,7 +2,7 @@ package com.whut.onlinejudge.core.judge;
 
 import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
-import com.whut.onlinejudge.common.model.entity.Question;
+import com.whut.onlinejudge.core.cache.CacheQuestion;
 
 /**
  * 根据代码执行的结果 给出答案提交的结果
@@ -12,46 +12,46 @@ import com.whut.onlinejudge.common.model.entity.Question;
  */
 public abstract class CoreJudgeStrategy {
 
-    public JudgeInfo resolve(AnswerSubmission as, Question q) {
+    public JudgeInfo resolve(AnswerSubmission as, CacheQuestion cq) {
         final String language = as.getLanguage();
         switch (language) {
             case "java": {
-                return javaResolve(as, q);
+                return javaResolve(as, cq);
             }
             case "cpp": {
-                return cPlusResolve(as, q);
+                return cPlusResolve(as, cq);
             }
             case "c": {
-                return cResolve(as, q);
+                return cResolve(as, cq);
             }
             case "python": {
-                return pythonResolve(as, q);
+                return pythonResolve(as, cq);
             }
             case "go": {
-                return goResolve(as, q);
+                return goResolve(as, cq);
             }
         }
 
         return null;
     }
 
-    public JudgeInfo javaResolve(AnswerSubmission as, Question q) {
+    public JudgeInfo javaResolve(AnswerSubmission as, CacheQuestion cq) {
         return null;
     }
 
-    public JudgeInfo cPlusResolve(AnswerSubmission as, Question q) {
+    public JudgeInfo cPlusResolve(AnswerSubmission as, CacheQuestion cq) {
         return null;
     }
 
-    public JudgeInfo cResolve(AnswerSubmission as, Question q) {
+    public JudgeInfo cResolve(AnswerSubmission as, CacheQuestion cq) {
         return null;
     }
 
-    public JudgeInfo pythonResolve(AnswerSubmission as, Question q) {
+    public JudgeInfo pythonResolve(AnswerSubmission as, CacheQuestion cq) {
         return null;
     }
 
-    public JudgeInfo goResolve(AnswerSubmission as, Question q) {
+    public JudgeInfo goResolve(AnswerSubmission as, CacheQuestion cq) {
         return null;
     }
 }

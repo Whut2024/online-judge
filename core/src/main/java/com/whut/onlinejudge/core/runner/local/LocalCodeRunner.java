@@ -2,8 +2,7 @@ package com.whut.onlinejudge.core.runner.local;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
-import com.whut.onlinejudge.common.model.entity.JudgeCase;
-import com.whut.onlinejudge.common.model.entity.JudgeConfig;
+import com.whut.onlinejudge.core.cache.CacheQuestion;
 import com.whut.onlinejudge.core.constant.JavaCodeConstant;
 import com.whut.onlinejudge.core.runner.CodeRunner;
 import com.whut.onlinejudge.core.runner.docker.DockerExecutor;
@@ -31,18 +30,17 @@ public class LocalCodeRunner extends CodeRunner {
     private final Runtime runtime = Runtime.getRuntime();
 
     @Override
-    protected List<String> executeAndGetOutput(String command,
-                                               JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+    protected List<String> executeAndGetOutput(String command, CacheQuestion cq) {
         final Process process;
         try {
             process = runtime.exec(command);
             // 设置参数相关的输入流
-            IoUtil.write(process.getOutputStream(), StandardCharsets.UTF_8, true, getOutputList(judgeConfig, judgeCaseList).toArray());
+            IoUtil.write(process.getOutputStream(), StandardCharsets.UTF_8, true, (Object[]) cq.getInputAll());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         try {
-            if (!process.waitFor(judgeConfig.getTimeLimit() * 3L / 2, TimeUnit.MILLISECONDS)) {
+            if (!process.waitFor(cq.getJudgeConfig().getTimeLimit() * 3L / 2, TimeUnit.MILLISECONDS)) {
                 process.destroy();
                 final List<String> list = new ArrayList<>();
                 list.add("运行时间过长");

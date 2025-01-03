@@ -7,6 +7,7 @@ import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
+import com.whut.onlinejudge.core.cache.CacheQuestion;
 import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
 import com.whut.onlinejudge.core.constant.JavaCodeConstant;
@@ -33,18 +34,14 @@ public abstract class CodeRunner {
     /**
      * @param language      编程语言
      * @param submittedCode 用户提交的代码
-     * @param coreCode      引导代码
-     * @param judgeConfig   运行现状条件
-     * @param judgeCaseList 代码输入和输出
      * @return 运行过程中的异常和资源消耗
      * 这个方法要被代理增强，不能被 final 修饰
      */
-    public JudgeInfo run(String language, String submittedCode, String coreCode,
-                         JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+    public JudgeInfo run(String language, String submittedCode, CacheQuestion cq) {
         // 代码编译
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
-        final String error = LocalCodeUtil.compile(language, submittedCode, coreCode, prefix);
+        final String error = LocalCodeUtil.compile(language, submittedCode, prefix);
         if (StrUtil.isNotBlank(error)) {
             // 编译失败
             FileUtil.del(prefix);
@@ -57,12 +54,11 @@ public abstract class CodeRunner {
 
         // 代码执行
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
-        final String command = CommandFactory.getExecutionCommand(language, prefix);
+        final String command = CommandFactory.getExecutionCommand(language, prefix, cq.getCompiledPath(language));
         if (command == null)
             return JudgeInfo.zeroLimit(RunnerStatusEnum.LANGUAGE_ERROR);
 
-
-        this.extractOutput(executeAndGetOutput(command, judgeConfig, judgeCaseList), runnerContext);
+        this.extractOutput(executeAndGetOutput(command, cq), runnerContext);
 
         // 删除文件夹
         FileUtil.del(prefix);
@@ -72,8 +68,7 @@ public abstract class CodeRunner {
     /**
      * 运行代码获取程序输出
      */
-    protected abstract List<String> executeAndGetOutput(String command,
-                                                        JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList);
+    protected abstract List<String> executeAndGetOutput(String command, CacheQuestion cq);
 
     /**
      * 处理代码结果返回

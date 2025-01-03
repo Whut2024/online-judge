@@ -19,10 +19,10 @@
         <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id,user_id,title,
-        content,judge_case,core_code,
-        judge_config,submission_number,acceptance_number,
-        create_time,update_time,is_delete
-    </sql>
+    <select id="getCoreCodeBaseCodeJudgeCaseJudgeConfig"
+            resultType="com.whut.onlinejudge.common.model.entity.Question">
+        select core_code, judge_case, judge_config, base_code
+        from t_question
+        where id = #{id};
+    </select>
 </mapper>

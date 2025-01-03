@@ -23,14 +23,22 @@ public class CommandFactory {
         generatorMap.put(LanguageEnum.PYTHON.getName(), new PythonCommandGenerator());
     }
 
-    public static String getExecutionCommand(String language, String prefix) {
+    public static String getExecutionCommand(String language, String submittedCodePrefix, String coreCodeCodePrefix) {
         final AbstractCommandGenerator generator;
-        return (generator = generatorMap.get(language)) != null ? generator.getExecutionCommand(prefix) : null;
+        return (generator = generatorMap.get(language)) != null ?
+                generator.getExecutionCommand(submittedCodePrefix, coreCodeCodePrefix) : null;
     }
 
-    public static String getCompilationCommand(String language, String prefix) {
+    public static String getCompilationCoreCodeCommand(String language, String prefix) {
         final AbstractCommandGenerator generator;
-        return (generator = generatorMap.get(language)) != null ? generator.getCompilationCommand(prefix) : null;
+        return (generator = generatorMap.get(language)) != null ?
+                generator.getCompilationCoreCodeCommand(prefix) : null;
+    }
+
+    public static String getCompilationSubmittedCodeCommand(String language, String prefix) {
+        final AbstractCommandGenerator generator;
+        return (generator = generatorMap.get(language)) != null ?
+                generator.getCompilationSubmittedCodeCommand(prefix) : null;
     }
 
     /**
@@ -42,5 +50,9 @@ public class CommandFactory {
 
     public static String getCoreCodeSrc(String language, String prefix) {
         return prefix + JavaCodeConstant.MAIN_NAME;
+    }
+
+    public static String getSubmittedDent(String language, String prefix) {
+        return prefix + JavaCodeConstant.SOLUTION_CLASS_NAME;
     }
 }

@@ -1,14 +1,14 @@
 package com.whut.onlinejudge.core.service.impl;
 
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
-import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
 import com.whut.onlinejudge.common.service.QuestionService;
+import com.whut.onlinejudge.core.cache.CacheQuestion;
+import com.whut.onlinejudge.core.cache.LocalQuestionCache;
 import com.whut.onlinejudge.core.judge.CoreJudgeStrategy;
 import com.whut.onlinejudge.core.mapper.AnswerSubmissionMapper;
 import lombok.AllArgsConstructor;
@@ -30,6 +30,8 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
 
     private final CoreJudgeStrategy coreJudgeStrategy;
 
+    private LocalQuestionCache localQuestionCache;
+
     @Override
     public JudgeInfo resolve(Long asId) {
         // 校验相关答案提交
@@ -44,21 +46,17 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
         }
         as.setId(asId);
 
+        final CacheQuestion cacheQuestion = localQuestionCache.get(as.getQuestionId(), as.getLanguage());
 
         // 校验相关题目
-        final LambdaQueryWrapper<Question> qWrapper = new LambdaQueryWrapper<>();
-        qWrapper.eq(Question::getId, as.getQuestionId());
-        qWrapper.select(Question::getCoreCode, Question::getJudgeCase, Question::getJudgeConfig);
-        final Question q = questionService.getOne(qWrapper);
-        if (q == null) {
+        if (cacheQuestion.getId() == null) {
             final JudgeInfo judgeInfo = JudgeInfo.zeroLimit(RunnerStatusEnum.QUESTION_NOT_EXIST);
             updateAnswerSubmission(as, judgeInfo, SatusEnum.ERROR);
             return judgeInfo;
         }
-        q.setId(as.getQuestionId());
 
         // 代码执行  结果处理
-        final JudgeInfo judgeInfo = coreJudgeStrategy.resolve(as, q);
+        final JudgeInfo judgeInfo = coreJudgeStrategy.resolve(as, cacheQuestion);
         updateAnswerSubmission(as, judgeInfo, SatusEnum.OVER);
 
         return judgeInfo;

@@ -17,4 +17,6 @@ public class CodeRunnerConfig {
     private RunnerEnum environment;
 
     private String machineId;
+
+    private String compiledCodeCachePrefix;
 }

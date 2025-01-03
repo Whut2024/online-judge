@@ -1,7 +1,6 @@
 package com.whut.onlinejudge.core.runner.docker;
 
-import com.whut.onlinejudge.common.model.entity.JudgeCase;
-import com.whut.onlinejudge.common.model.entity.JudgeConfig;
+import com.whut.onlinejudge.core.cache.CacheQuestion;
 import com.whut.onlinejudge.core.runner.CodeRunner;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -24,20 +23,17 @@ public class DockerCodeRunner extends CodeRunner {
     private final DockerExecutor dockerExecutor;
 
     @Override
-    protected List<String> executeAndGetOutput(String command,
-                                               JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
+    protected List<String> executeAndGetOutput(String command, CacheQuestion cq) {
         // 输出-没有异常-未通过
         // 输出-异常-有异常-未通过
         // 输出-内存-时间-通过
-        List<String> outputList = getOutputList(judgeConfig, judgeCaseList);
+        final String[] inputAll = cq.getInputAll();
         final String[] commandNoArgsArray = command.split(" ");
         final int ccaLen = commandNoArgsArray.length;
 
-        final String[] commandArgsArray = new String[ccaLen + outputList.size()];
+        final String[] commandArgsArray = new String[ccaLen + inputAll.length];
         System.arraycopy(commandNoArgsArray, 0, commandArgsArray, 0, ccaLen);
-        for (int i = 0; i < outputList.size(); i++) {
-            commandArgsArray[i + ccaLen] = outputList.get(i);
-        }
+        System.arraycopy(inputAll, 0, commandArgsArray, ccaLen, inputAll.length);
 
         return dockerExecutor.execute(commandArgsArray);
     }

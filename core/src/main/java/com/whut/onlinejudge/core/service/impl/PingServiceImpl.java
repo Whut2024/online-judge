@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 当前这个类的 check 方法在 2025-01-03 的修改中已经失效，暂时未修复
  * @author liuqiao
  * @since 2024-12-06
  */
@@ -49,7 +50,7 @@ public class PingServiceImpl implements PingService {
 
     @Override
     public String check() {
-        final JudgeInfo judgeInfo = runner.run(MOCK_LANGUAGE, MOCK_SUBMITTED_CODE, MOCK_CORE_CODE, MOCK_JUDGE_CONFIG, MOCK_JUDGE_CASE_LIST);
-        return judgeInfo.getTime() > 0 ? judgeInfo.getMessage() : "";
+        final JudgeInfo judgeInfo = runner.run(MOCK_LANGUAGE, MOCK_SUBMITTED_CODE, null);
+        return judgeInfo.getMemory() > 0 ? judgeInfo.getMessage() : "";
     }
 }

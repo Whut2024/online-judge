@@ -10,6 +10,7 @@ import com.whut.onlinejudge.common.model.entity.Question;
 * @Entity com.whut.onlinejudge.common.model.entity.Question
 */
 public interface QuestionMapper extends BaseMapper<Question> {
+    Question getCoreCodeBaseCodeJudgeCaseJudgeConfig(Long id);
 }
 
 

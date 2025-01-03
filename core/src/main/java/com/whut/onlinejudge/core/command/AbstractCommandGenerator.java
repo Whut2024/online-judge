@@ -8,12 +8,18 @@ package com.whut.onlinejudge.core.command;
 public abstract class AbstractCommandGenerator {
 
     /**
-     * @param prefix 源文件的目录
+     * @param submittedCodePrefix 用户提交代码源文件的目录
+     * @param coreCodePrefix 核心引导代码源文件的目录
      */
-    public abstract String getExecutionCommand(String prefix);
+    public abstract String getExecutionCommand(String submittedCodePrefix, String coreCodePrefix);
 
     /**
      * @param prefix 源文件的目录
      */
-    public abstract String getCompilationCommand(String prefix);
+    public abstract String getCompilationCoreCodeCommand(String prefix);
+
+    /**
+     * @param prefix 源文件的目录
+     */
+    public abstract String getCompilationSubmittedCodeCommand(String prefix);
 }
