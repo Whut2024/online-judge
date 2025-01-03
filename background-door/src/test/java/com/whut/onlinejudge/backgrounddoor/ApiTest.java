@@ -17,7 +17,7 @@ public class ApiTest {
 
         for (int i = 0; i < 20; i++) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -25,8 +25,8 @@ public class ApiTest {
                 while (true) {
                     long start = System.currentTimeMillis();
                     HttpResponse response = HttpRequest
-                            .post("http://189.1.244.220:8101/api/answer_submission/do")
-                            .header("token", "17517c4af19dc6d10322c7c8a2937251")
+                            .post("http://1.94.101.35:8101/api/answer_submission/do")
+                            .header("token", "cbf830315f2cab1382b17b0c8347bc69")
                             .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                             .header("Content-Type", "application/json")
                             .header("Accept", "*/*")
