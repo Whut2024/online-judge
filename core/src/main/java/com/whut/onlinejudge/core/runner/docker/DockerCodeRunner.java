@@ -23,7 +23,7 @@ public class DockerCodeRunner extends CodeRunner {
     private final DockerExecutor dockerExecutor;
 
     @Override
-    protected List<String> executeAndGetOutput(String command, CacheQuestion cq) {
+    protected List<String> executeUsersCode(String command, CacheQuestion cq) {
         // 输出-没有异常-未通过
         // 输出-异常-有异常-未通过
         // 输出-内存-时间-通过

@@ -48,7 +48,8 @@ public class LocalQuestionCache {
     }
 
     /**
-     * prepare question's core code, base code, judge config and input and output arrays
+     * <p>prepare question's core code, base code, judge config and input and output arrays</p>
+     * out 内存 时间 测试案例个数 测试案例
      */
     private CacheQuestion get(Long id) {
         // loop util get a lock
@@ -113,7 +114,7 @@ public class LocalQuestionCache {
     }
 
     /**
-     * prepare compiled core code for different language
+     * compile core code and store it in local file system for different program language
      */
     public CacheQuestion get(Long id, String language) {
         final CacheQuestion cq = get(id);

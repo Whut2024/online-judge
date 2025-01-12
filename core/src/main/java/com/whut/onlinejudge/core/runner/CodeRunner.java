@@ -1,10 +1,7 @@
 package com.whut.onlinejudge.core.runner;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import com.whut.onlinejudge.common.model.entity.JudgeCase;
-import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.core.cache.CacheQuestion;
@@ -16,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,22 +54,26 @@ public abstract class CodeRunner {
         if (command == null)
             return JudgeInfo.zeroLimit(RunnerStatusEnum.LANGUAGE_ERROR);
 
-        this.extractOutput(executeAndGetOutput(command, cq), runnerContext);
+        this.extractOutput(executeUsersCode(command, cq), runnerContext);
 
         // 删除文件夹
         FileUtil.del(prefix);
-        return this.extractContext(runnerContext);
+        return this.getJudgeInfoFromContext(runnerContext);
     }
 
+
     /**
-     * 运行代码获取程序输出
+     * @param command invoke user's code command
+     * @param cq      cache question
+     * @return the output of use's code execution
+     * <p>execute user's code and get output at list type</p>
      */
-    protected abstract List<String> executeAndGetOutput(String command, CacheQuestion cq);
+    protected abstract List<String> executeUsersCode(String command, CacheQuestion cq);
 
     /**
      * 处理代码结果返回
      */
-    protected final JudgeInfo extractContext(CodeRunnerContext runnerContext) {
+    protected final JudgeInfo getJudgeInfoFromContext(CodeRunnerContext runnerContext) {
         final JudgeInfo judgeInfo = JudgeInfo.zeroLimit(RunnerStatusEnum.INNER);
         judgeInfo.setMessage(runnerContext.getOutput());
         judgeInfo.setMemory(runnerContext.getMemoryLimit());
@@ -81,44 +81,6 @@ public abstract class CodeRunner {
         judgeInfo.setException(runnerContext.getException());
 
         return judgeInfo;
-    }
-
-    /**
-     * out 内存 时间 测试案例个数 测试案例
-     */
-    protected final List<String> getOutputList(JudgeConfig judgeConfig, List<JudgeCase> judgeCaseList) {
-        final char newLine = '\n';
-        List<String> args = new ArrayList<>(3 + judgeCaseList.size() * 2);
-        args.add(String.valueOf(judgeConfig.getMemoryLimit()) + newLine); // 内存
-        args.add(String.valueOf(judgeConfig.getTimeLimit()) + newLine); // 时间
-
-        if (CollectionUtil.isEmpty(judgeCaseList)) {
-            // 没有输入输出
-            args.add("0" + newLine);
-            return args;
-        }
-
-        args.add(String.valueOf(judgeCaseList.size()) + newLine); // 个数
-
-        // 测试案例输入
-        for (JudgeCase judgeCase : judgeCaseList) {
-            final List<String> input = judgeCase.getInput();
-            for (String s : input) {
-                args.add(s + newLine);
-            }
-        }
-
-        if (CollectionUtil.isNotEmpty(judgeCaseList.get(0).getOutput())) {
-            // 存在输出比较
-            for (JudgeCase judgeCase : judgeCaseList) {
-                final List<String> out = judgeCase.getOutput();
-                for (String s : out) {
-                    args.add(s + newLine);
-                }
-            }
-        }
-
-        return args;
     }
 
     /**

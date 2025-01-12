@@ -30,7 +30,7 @@ public class LocalCodeRunner extends CodeRunner {
     private final Runtime runtime = Runtime.getRuntime();
 
     @Override
-    protected List<String> executeAndGetOutput(String command, CacheQuestion cq) {
+    protected List<String> executeUsersCode(String command, CacheQuestion cq) {
         final Process process;
         try {
             process = runtime.exec(command);
