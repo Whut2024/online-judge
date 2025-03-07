@@ -83,10 +83,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         final Question question = this.getOne(wrapper);
         ThrowUtils.throwIf(question == null, ErrorCode.PARAMS_ERROR, "题目不存在");
 
-        // 判断权限
-        final User user = UserHolder.get();
-        ThrowUtils.throwIf(!UserRoleEnum.isAdmin(user) && !user.getId().equals(question.getUserId()), ErrorCode.NO_AUTH_ERROR);
-
         return question;
     }
 
