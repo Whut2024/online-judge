@@ -16,10 +16,7 @@ import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author liuqiao
@@ -35,7 +32,7 @@ public class AnswerSubmissionController {
     private final AnswerSubmissionService answerSubmissionService;
 
     @PostMapping("/do")
-    public BaseResponse<JudgeInfo> doQuestionSubmit(@RequestBody AnswerSubmissionAddRequest answerSubmissionAddRequest) {
+    public BaseResponse<Long> doQuestionSubmit(@RequestBody AnswerSubmissionAddRequest answerSubmissionAddRequest) {
         ThrowUtils.throwIf(answerSubmissionAddRequest == null,
                 ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final Long questionId = answerSubmissionAddRequest.getQuestionId();
@@ -49,7 +46,13 @@ public class AnswerSubmissionController {
                         language.length() > 8 || !LanguageEnum.exists(language),
                 ErrorCode.PARAMS_ERROR, "代码或者编程语言选择错误");
 
-        return ResultUtils.success(answerSubmissionService.doQuestionSubmit(answerSubmissionAddRequest));
+        return ResultUtils.success(-1L);
+    }
+
+
+    @GetMapping("/check/{id}")
+    public BaseResponse<JudgeInfo> checkSubmit(@PathVariable String id) {
+        return ResultUtils.success(null);
     }
 
     @PostMapping("/list/page")
