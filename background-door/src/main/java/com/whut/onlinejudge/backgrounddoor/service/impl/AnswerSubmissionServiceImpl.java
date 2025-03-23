@@ -1,11 +1,14 @@
 package com.whut.onlinejudge.backgrounddoor.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
+import com.whut.onlinejudge.backgrounddoor.config.KfaConfig;
+import com.whut.onlinejudge.backgrounddoor.constant.RedisConstant;
 import com.whut.onlinejudge.backgrounddoor.exception.BusinessException;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
 import com.whut.onlinejudge.backgrounddoor.mapper.AnswerSubmissionMapper;
@@ -16,6 +19,7 @@ import com.whut.onlinejudge.common.constant.CommonConstant;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionAddRequest;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionQueryRequest;
 import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
+import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.common.model.entity.User;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
@@ -24,6 +28,8 @@ import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,6 +42,9 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         implements AnswerSubmissionService {
 
     private final QuestionService questionService;
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
 
     @Override
@@ -64,7 +73,10 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         as.setUserId(userId);
         this.save(as);
 
-        return -1L;
+        // 发送到消息队列
+        kafkaTemplate.send(KfaConfig.TOPIC, String.valueOf(as.getId()));
+
+        return as.getId();
     }
 
     @Override
@@ -82,6 +94,16 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         answerSubmissionVoPage.setTotal(page.getTotal());
 
         return answerSubmissionVoPage;
+    }
+
+    @Override
+    public JudgeInfo submitCheck(Long id) {
+        final String judgeInfoStr = stringRedisTemplate.opsForValue().get(RedisConstant.JUDGE_INFO_PREFIX + id);
+        if (StrUtil.isEmpty(judgeInfoStr)) {
+            return JudgeInfo.DEFAULT_RUNNING_JUDGE;
+        }
+
+        return JSONUtil.toBean(judgeInfoStr, JudgeInfo.class);
     }
 
     private QueryWrapper<AnswerSubmission> getAnswerSubmissionWrapper(AnswerSubmissionQueryRequest answerSubmissionQueryRequest) {

@@ -27,4 +27,7 @@ public interface RedisConstant {
 
     String OTHER_IP_KEY = "ip:other:";
     long OTHER_IP_TIME = 30 * 60 * 1000L;
+
+    String JUDGE_INFO_PREFIX = "judge-info:";
+
 }

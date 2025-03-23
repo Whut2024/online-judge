@@ -43,4 +43,6 @@ public class JudgeInfo implements Serializable {
         this.memory = memory;
         this.time = time;
     }
+
+    public final static JudgeInfo DEFAULT_RUNNING_JUDGE = new JudgeInfo("", -1, -1);
 }

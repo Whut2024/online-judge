@@ -33,4 +33,8 @@ public interface AnswerSubmissionService extends IService<AnswerSubmission> {
      */
     Page<AnswerSubmissionVo> listQuestionSubmitByPage(AnswerSubmissionQueryRequest answerSubmissionQueryRequest);
 
+    /**
+     * 检查提交的运行状态是否为完成
+     */
+    JudgeInfo submitCheck(Long id);
 }

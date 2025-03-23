@@ -1,6 +1,7 @@
 package com.whut.onlinejudge.backgrounddoor.controller;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whut.onlinejudge.backgrounddoor.annotation.TimeLimit;
 import com.whut.onlinejudge.backgrounddoor.common.BaseResponse;
@@ -10,6 +11,7 @@ import com.whut.onlinejudge.backgrounddoor.constant.MysqlConstant;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionAddRequest;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionQueryRequest;
+import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.enums.LanguageEnum;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
@@ -46,13 +48,16 @@ public class AnswerSubmissionController {
                         language.length() > 8 || !LanguageEnum.exists(language),
                 ErrorCode.PARAMS_ERROR, "代码或者编程语言选择错误");
 
-        return ResultUtils.success(-1L);
+        return ResultUtils.success(answerSubmissionService.doQuestionSubmit(answerSubmissionAddRequest));
     }
 
 
+    // todo 接口限流
+    @SuppressWarnings("all")
     @GetMapping("/check/{id}")
-    public BaseResponse<JudgeInfo> checkSubmit(@PathVariable String id) {
-        return ResultUtils.success(null);
+    public BaseResponse<JudgeInfo> checkSubmit(@PathVariable Long id) {
+        ThrowUtils.throwIf(id == null || id <= 0, ErrorCode.PARAMS_ERROR, "ID 错误");
+        return ResultUtils.success(answerSubmissionService.submitCheck(id));
     }
 
     @PostMapping("/list/page")
