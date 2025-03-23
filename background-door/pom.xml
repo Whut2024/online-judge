@@ -118,17 +118,6 @@
             <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--Dubbo配件
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>2.7.23</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-registry-redis</artifactId>
-            <version>2.7.23</version>
-        </dependency>-->
         <!--nacos config-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

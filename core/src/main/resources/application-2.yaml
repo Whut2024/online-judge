@@ -1,7 +1,0 @@
-#Dubbo
-dubbo:
-  application:
-    qos-port: 22222
-
-  protocol:
-    port: 20882

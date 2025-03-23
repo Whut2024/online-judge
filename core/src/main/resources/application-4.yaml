@@ -1,9 +1,0 @@
-#Dubbo
-dubbo:
-  application:
-    qos-port: 22224
-
-  protocol:
-    port: 20884
-code-runner:
-  environment: local
