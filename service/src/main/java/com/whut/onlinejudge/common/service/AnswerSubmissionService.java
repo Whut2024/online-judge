@@ -22,7 +22,7 @@ public interface AnswerSubmissionService extends IService<AnswerSubmission> {
      * @param answerSubmissionAddRequest 包含用户提交答案的相关信息，如用户ID、问题ID及提交的答案内容
      * @return 返回提交答案后生成的唯一标识ID，用于后续查询或修改答案
      */
-    JudgeInfo doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest);
+    Long doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest);
 
     /**
      * 分页查询问题提交记录

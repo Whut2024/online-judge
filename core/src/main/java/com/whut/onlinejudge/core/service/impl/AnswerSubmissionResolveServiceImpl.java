@@ -6,13 +6,11 @@ import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
-import com.whut.onlinejudge.common.service.QuestionService;
 import com.whut.onlinejudge.core.cache.CacheQuestion;
 import com.whut.onlinejudge.core.cache.LocalQuestionCache;
 import com.whut.onlinejudge.core.judge.CoreJudgeStrategy;
 import com.whut.onlinejudge.core.mapper.AnswerSubmissionMapper;
 import lombok.AllArgsConstructor;
-import org.apache.dubbo.config.annotation.DubboService;
 
 /**
  * 校验答案提交和相关题目 选择合适的提交处理方式
@@ -20,11 +18,8 @@ import org.apache.dubbo.config.annotation.DubboService;
  * @author liuqiao
  * @since 2024-12-01
  */
-@DubboService
 @AllArgsConstructor
 public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResolveService {
-
-    private final QuestionService questionService;
 
     private final AnswerSubmissionMapper asMapper;
 

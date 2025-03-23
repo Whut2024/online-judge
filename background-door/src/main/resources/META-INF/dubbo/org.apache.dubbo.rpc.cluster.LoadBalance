@@ -1,1 +1,0 @@
-redis-least-usage=com.whut.onlinejudge.backgrounddoor.dubbo.loadbalance.CurrentLeastUsageLoadBalance

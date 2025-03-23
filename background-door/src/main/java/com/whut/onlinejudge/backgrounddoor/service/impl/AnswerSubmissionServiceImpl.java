@@ -6,10 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
-import com.whut.onlinejudge.backgrounddoor.dubbo.loadbalance.CurrentLeastUsageLoadBalance;
 import com.whut.onlinejudge.backgrounddoor.exception.BusinessException;
 import com.whut.onlinejudge.backgrounddoor.exception.ThrowUtils;
-import com.whut.onlinejudge.backgrounddoor.judge.JudgeStrategy;
 import com.whut.onlinejudge.backgrounddoor.mapper.AnswerSubmissionMapper;
 import com.whut.onlinejudge.backgrounddoor.utils.DangerousWordCheck;
 import com.whut.onlinejudge.backgrounddoor.utils.SqlUtils;
@@ -18,7 +16,6 @@ import com.whut.onlinejudge.common.constant.CommonConstant;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionAddRequest;
 import com.whut.onlinejudge.common.model.dto.answersubmission.AnswerSubmissionQueryRequest;
 import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
-import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.common.model.entity.User;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
@@ -27,10 +24,8 @@ import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,10 +37,9 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
 
     private final QuestionService questionService;
 
-    private final JudgeStrategy judgeStrategy;
 
     @Override
-    public JudgeInfo doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest) {
+    public Long doQuestionSubmit(AnswerSubmissionAddRequest answerSubmissionAddRequest) {
         final Long questionId = answerSubmissionAddRequest.getQuestionId();
         final String submittedCode = answerSubmissionAddRequest.getSubmittedCode();
         final String language = answerSubmissionAddRequest.getLanguage();
@@ -70,7 +64,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         as.setUserId(userId);
         this.save(as);
 
-        return judgeStrategy.judge(as.getId());
+        return -1L;
     }
 
     @Override
