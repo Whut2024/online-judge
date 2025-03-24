@@ -31,10 +31,10 @@ public abstract class CodeRunner {
      * @param language      编程语言
      * @param submittedCode 用户提交的代码
      * @return 运行过程中的异常和资源消耗
-     * 这个方法要被代理增强，不能被 final 修饰
      */
-    public JudgeInfo run(String language, String submittedCode, CacheQuestion cq) {
+    public final JudgeInfo run(String language, String submittedCode, CacheQuestion cq, Long id) {
         // 代码编译
+        log.info("提交 {}, 代码编译", id);
         final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
 
         final String error = LocalCodeUtil.compile(language, submittedCode, prefix);
@@ -44,11 +44,13 @@ public abstract class CodeRunner {
             final JudgeInfo compiledFailJudgeInfo = JudgeInfo.zeroLimit(RunnerStatusEnum.COMPILE_FAIL);
             compiledFailJudgeInfo.setMessage("");
             compiledFailJudgeInfo.setException(error);
+            log.info("提交 {}, 代码编译失败", id);
             return compiledFailJudgeInfo;
         }
 
 
         // 代码执行
+        log.info("提交 {}, 代码执行", id);
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
         final String command = CommandFactory.getExecutionCommand(language, prefix, cq.getCompiledPath(language));
         if (command == null)

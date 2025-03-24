@@ -28,6 +28,7 @@ import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMapper, AnswerSubmission>
         implements AnswerSubmissionService {
 
@@ -45,6 +47,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final StringRedisTemplate stringRedisTemplate;
+
 
 
     @Override
@@ -74,9 +77,10 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
         this.save(as);
 
         // 发送到消息队列
-        kafkaTemplate.send(KfaConfig.TOPIC, String.valueOf(as.getId()));
-
-        return as.getId();
+        final Long id = as.getId();
+        kafkaTemplate.send(KfaConfig.TOPIC, String.valueOf(id));
+        log.info("发送消息 {}", id);
+        return id;
     }
 
     @Override

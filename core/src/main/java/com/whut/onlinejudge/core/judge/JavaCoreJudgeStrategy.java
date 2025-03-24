@@ -24,6 +24,6 @@ public class JavaCoreJudgeStrategy extends CoreJudgeStrategy {
 
     @Override
     public JudgeInfo javaResolve(AnswerSubmission as, CacheQuestion cq) {
-        return runner.run(as.getLanguage(), as.getSubmittedCode(), cq);
+        return runner.run(as.getLanguage(), as.getSubmittedCode(), cq, as.getId());
     }
 }
