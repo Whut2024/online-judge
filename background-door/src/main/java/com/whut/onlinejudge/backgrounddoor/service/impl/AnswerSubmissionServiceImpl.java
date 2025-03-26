@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.LongAdder;
 
 
 @Service
@@ -47,7 +48,7 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final StringRedisTemplate stringRedisTemplate;
-
+    private final static LongAdder count = new LongAdder();
 
 
     @Override
@@ -78,7 +79,8 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
 
         // 发送到消息队列
         final Long id = as.getId();
-        kafkaTemplate.send(KfaConfig.TOPIC, String.valueOf(id));
+        count.increment();
+        kafkaTemplate.send(KfaConfig.TOPIC, count.intValue() % 2, "", String.valueOf(id));
         log.info("发送消息 {}", id);
         return id;
     }
