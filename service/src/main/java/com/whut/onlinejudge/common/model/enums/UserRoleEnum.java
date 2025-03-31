@@ -4,10 +4,6 @@ package com.whut.onlinejudge.common.model.enums;
 import com.whut.onlinejudge.common.model.entity.User;
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * 用户角色枚举
  */
