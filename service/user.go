@@ -54,3 +54,7 @@ func (this *UserService) Register(body *request.Register, c *gin.Context) {
 	// 响应
 	response.Ok(c)
 }
+
+func (this *UserService) Login(body *request.Login, c *gin.Context) {}
+
+func (this *UserService) GetLoginUser(token *string, c *gin.Context) {}

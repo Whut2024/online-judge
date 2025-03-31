@@ -17,5 +17,7 @@ func InitRouter(engine *gin.Engine) {
 
 	// 开始调用不同模块接口路由初始化方法
 	routerGroup.InitUserRouter(publicGroup, privateGroup, adminGroup)
+	routerGroup.InitQuestionRouter(publicGroup, privateGroup, adminGroup)
+	routerGroup.InitSubmissionRouter(publicGroup, privateGroup, adminGroup)
 
 }
