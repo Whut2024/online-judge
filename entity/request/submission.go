@@ -5,9 +5,9 @@ import (
 )
 
 type SubmissionDoRequest struct {
-	QuestionId    int64  `gorm:"column:question_id" json:"questionId"`
-	SubmittedCode string `gorm:"column:submitted_code;type:text" json:"submittedCode"`
-	Language      string `gorm:"column:language;size:8" json:"language"`
+	QuestionId    int64             `gorm:"column:question_id" json:"questionId"`
+	SubmittedCode string            `gorm:"column:submitted_code;type:text" json:"submittedCode"`
+	Language      constant.Language `gorm:"column:language;size:8" json:"language"`
 }
 
 type SubmissionQueryRequest struct {

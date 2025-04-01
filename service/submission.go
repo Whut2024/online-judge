@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
 	"go-oj/constant"
@@ -9,6 +8,7 @@ import (
 	"go-oj/entity/request"
 	"go-oj/entity/response"
 	"go-oj/global"
+	"go-oj/util"
 	"gorm.io/gorm"
 	"strconv"
 )
@@ -27,9 +27,30 @@ func (this *SubmissionService) Check(id int64, c *gin.Context) {
 	_ = json.Unmarshal([]byte(judgeInfoStr), &judgeInfo)
 	response.OkWithData(judgeInfo, c)
 }
-func (this *SubmissionService) DoSubmission(submission *request.SubmissionDoRequest, c *gin.Context) {
-	fmt.Println(*submission)
-	response.Ok(c)
+func (this *SubmissionService) DoSubmission(submissionAdd *request.SubmissionDoRequest, c *gin.Context) {
+	var question database.Question
+	global.DB.Find(&question, "id = ?", submissionAdd.QuestionId)
+	if question.Id == 0 {
+		response.FailWithMessage("题目不存在", c)
+		return
+	}
+
+	data, _ := c.Get(constant.USER_CACHE)
+	user := data.(*response.UserVo)
+
+	submission := &database.AnswerSubmission{
+		Id:            int64(util.Snowflake()),
+		UserId:        user.Id,
+		QuestionId:    question.Id,
+		SubmittedCode: submissionAdd.SubmittedCode,
+		Language:      submissionAdd.Language,
+		Status:        0,
+	}
+	global.DB.Create(submission)
+
+	_, _ = global.Kafka.Write([]byte(strconv.FormatInt(submission.Id, 10)))
+	global.Log.Info("write a message")
+	response.OkWithData(submission.Id, c)
 }
 func (this *SubmissionService) Page(query *request.SubmissionQueryRequest, c *gin.Context) {
 	var submissionList []database.AnswerSubmission
