@@ -39,13 +39,12 @@ func (this *QuestionService) Page(query *request.QuestionQueryRequest, c *gin.Co
 	var questionList []database.Question
 
 	x := global.DB.Offset(query.PageSize * (query.Current - 1)).Limit(query.PageSize)
-	buildQueryConds(query, x)
+	this.buildQueryConds(query, x)
 	x.Find(&questionList)
 
 	response.OkWithData(questionList, c)
 }
-
-func buildQueryConds(query *request.QuestionQueryRequest, x *gorm.DB) {
+func (this *QuestionService) buildQueryConds(query *request.QuestionQueryRequest, x *gorm.DB) {
 	if query.Id != 0 {
 		x = x.Where("id = ?", query.Id)
 		return
@@ -75,12 +74,11 @@ func buildQueryConds(query *request.QuestionQueryRequest, x *gorm.DB) {
 		x = x.Order(query.SortField + " " + query.SortOrder)
 	}
 }
-
 func (this *QuestionService) PageVo(query *request.QuestionQueryRequest, c *gin.Context) {
 	var questionList []database.Question
 
 	x := global.DB.Offset(query.PageSize * (query.Current - 1)).Limit(query.PageSize)
-	buildQueryConds(query, x)
+	this.buildQueryConds(query, x)
 	x.Find(&questionList)
 
 	response.OkWithData(questionList, c)

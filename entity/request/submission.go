@@ -16,5 +16,5 @@ type SubmissionQueryRequest struct {
 	UserId     int64                     `gorm:"column:user_id" json:"userId"`
 	QuestionId int64                     `gorm:"column:question_id" json:"questionId"`
 	Language   constant.Language         `gorm:"column:language;size:8" json:"language" binding:"required,max=10"`
-	Status     constant.SubmissionStatus `gorm:"column:status;default:2" json:"status"`
+	Status     constant.SubmissionStatus `gorm:"column:status;default:0" json:"status"`
 }

@@ -21,7 +21,6 @@ type QuestionDeleteRequest struct {
 
 type QuestionQueryRequest struct {
 	constant.Sort
-	Current int      `json:"current"`
 	EndId   int64    `json:"endId"`
 	Id      int64    `json:"id"`
 	UserId  int64    `json:"userId"`

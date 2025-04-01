@@ -20,12 +20,7 @@ func CheckToken(c *gin.Context) {
 
 	// 获取存储在 redis 中 user 对象
 	key := constant.USER_CACHE + token
-	userJsonStr, e := global.Redis.Get(key).Result()
-	if e != nil {
-		response.FailWithMessage("请稍后再试", c)
-		c.Abort()
-		return
-	}
+	userJsonStr, _ := global.Redis.Get(key).Result()
 	if len(userJsonStr) == 0 {
 		response.FailWithMessage("未登录", c)
 		c.Abort()
@@ -33,18 +28,13 @@ func CheckToken(c *gin.Context) {
 	}
 
 	user := &response.UserVo{}
-	err := json.Unmarshal([]byte(userJsonStr), user)
-	if err != nil {
-		response.FailWithMessage("请稍后再试", c)
-		c.Abort()
-		return
-	}
+	_ = json.Unmarshal([]byte(userJsonStr), user)
 
 	// 获取存储在 redis 中 user 版本信息
 	key = constant.USER_LOGIN_VERSION_KEY + strconv.FormatInt(user.Id, 10)
 	version, e := global.Redis.Get(key).Int64()
 	if e != nil {
-		response.FailWithMessage("请稍后再试", c)
+		response.FailWithMessage("用户登录超时", c)
 		c.Abort()
 		return
 	}

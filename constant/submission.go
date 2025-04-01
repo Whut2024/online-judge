@@ -1,6 +1,8 @@
 package constant
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Language string
 

@@ -6,6 +6,7 @@ type Sort struct {
 	PageSize  int    `json:"pageSize" binding:"required,max=20"`
 	SortField string `json:"sortField"`
 	SortOrder string `json:"sortOrder"`
+	Current   int    `json:"current"`
 }
 
 type SortOrder string
