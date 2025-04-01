@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/bsm/redislock"
 	"github.com/gin-gonic/gin"
 	"go-oj/constant"
@@ -55,6 +56,12 @@ func (this *UserService) Register(body *request.Register, c *gin.Context) {
 	response.Ok(c)
 }
 
-func (this *UserService) Login(body *request.Login, c *gin.Context) {}
+func (this *UserService) Login(body *request.Login, c *gin.Context) {
+	fmt.Println(body)
+	response.Ok(c)
+}
 
-func (this *UserService) GetLoginUser(token *string, c *gin.Context) {}
+func (this *UserService) GetLoginUser(token *string, c *gin.Context) {
+	fmt.Println(*token)
+	response.Ok(c)
+}

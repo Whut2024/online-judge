@@ -5,16 +5,21 @@ import (
 	"go-oj/entity/request"
 	"go-oj/entity/response"
 	"go-oj/service"
-	"net/http"
 )
 
 type UserApi struct {
 }
 
 func (this *UserApi) Login(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"user": "test",
-	})
+	// 结构体解析
+	b := new(request.Login)
+	e := c.ShouldBindBodyWithJSON(b)
+	if e != nil {
+		response.FailWithMessage(e.Error(), c)
+		return
+	}
+
+	service.ServiceGroupObj.UserService.Login(b, c)
 }
 
 func (this *UserApi) Register(c *gin.Context) {
@@ -30,7 +35,7 @@ func (this *UserApi) Register(c *gin.Context) {
 }
 
 func (this *UserApi) GetLoginUser(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"user": "test",
-	})
+	// 结构体解析
+	token := ""
+	service.ServiceGroupObj.UserService.GetLoginUser(&token, c)
 }

@@ -15,7 +15,7 @@ func (this *SubmissionRouterGroup) InitSubmissionRouter(publicGroup *gin.RouterG
 	}
 	{
 		privateGroup = privateGroup.Group("answer_submission")
-		privateGroup.Handle("GET", "check/{id}", submissionApi.Check)
+		privateGroup.Handle("GET", "check/:id", submissionApi.Check)
 		privateGroup.Handle("POST", "do", submissionApi.DoSubmission)
 		privateGroup.Handle("POST", "list/page", submissionApi.Page)
 
