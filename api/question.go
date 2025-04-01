@@ -5,16 +5,37 @@ import (
 	"go-oj/entity/request"
 	"go-oj/entity/response"
 	"go-oj/service"
+	"strconv"
 )
 
 type QuestionApi struct {
 }
 
 func (this *QuestionApi) Get(c *gin.Context) {
-	service.ServiceGroupObj.QuestionService.Get(1, c)
+	data := c.Query("id")
+	if len(data) == 0 {
+		response.FailWithMessage("题目 id 错误", c)
+		return
+	}
+	id, e := strconv.ParseInt(data, 10, 64)
+	if e != nil {
+		response.FailWithMessage("题目 id 错误", c)
+		return
+	}
+	service.ServiceGroupObj.QuestionService.Get(id, c)
 }
 func (this *QuestionApi) GetVo(c *gin.Context) {
-	service.ServiceGroupObj.QuestionService.GetVo(1, c)
+	data := c.Query("id")
+	if len(data) == 0 {
+		response.FailWithMessage("题目 id 错误", c)
+		return
+	}
+	id, e := strconv.ParseInt(data, 10, 64)
+	if e != nil {
+		response.FailWithMessage("题目 id 错误", c)
+		return
+	}
+	service.ServiceGroupObj.QuestionService.GetVo(id, c)
 }
 func (this *QuestionApi) Page(c *gin.Context) {
 	// 结构体解析
