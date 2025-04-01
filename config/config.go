@@ -5,4 +5,5 @@ type Config struct {
 	Mysql
 	Redis
 	Zap
+	Kafka
 }

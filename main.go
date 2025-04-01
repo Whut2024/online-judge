@@ -10,6 +10,7 @@ func main() {
 	initialize.InitGorm()
 	initialize.ConnectRedis()
 	initialize.InitLogger()
+	initialize.InitKafka()
 
 	engine := gin.Default()
 	initialize.InitRouter(engine)

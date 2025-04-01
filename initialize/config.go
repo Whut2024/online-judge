@@ -53,4 +53,14 @@ func InitConfig() {
 		selfConfig.Zap = zapConfig
 	}
 
+	{
+		kafkaConfig := config.Kafka{
+			Host:      "hserver",
+			Port:      9095,
+			Topic:     "go-test",
+			Partition: 0,
+		}
+		selfConfig.Kafka = kafkaConfig
+	}
+
 }
