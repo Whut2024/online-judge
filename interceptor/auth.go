@@ -54,7 +54,6 @@ func CheckToken(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	c.Abort()
 	c.Set(constant.USER_CACHE, user)
 	c.Next()
 }

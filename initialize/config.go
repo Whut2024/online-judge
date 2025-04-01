@@ -40,4 +40,17 @@ func InitConfig() {
 		selfConfig.Redis = redis
 	}
 
+	// zap logger
+	{
+		zapConfig := config.Zap{
+			Filename:       "/Users/laowang/developer/codes/go-oj/._log",
+			MaxSize:        1024,
+			MaxBackups:     30,
+			MaxAge:         30,
+			IsConsolePrint: true,
+			Level:          "info",
+		}
+		selfConfig.Zap = zapConfig
+	}
+
 }

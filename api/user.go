@@ -36,6 +36,5 @@ func (this *UserApi) Register(c *gin.Context) {
 
 func (this *UserApi) GetLoginUser(c *gin.Context) {
 	// 结构体解析
-	token := ""
-	service.ServiceGroupObj.UserService.GetLoginUser(&token, c)
+	service.ServiceGroupObj.UserService.GetLoginUser(c)
 }

@@ -9,6 +9,7 @@ func main() {
 	initialize.InitConfig()
 	initialize.InitGorm()
 	initialize.ConnectRedis()
+	initialize.InitLogger()
 
 	engine := gin.Default()
 	initialize.InitRouter(engine)
