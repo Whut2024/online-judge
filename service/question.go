@@ -32,7 +32,8 @@ func (this *QuestionService) GetVo(id int64, c *gin.Context) {
 		response.OkWithMessage("题目不存在", c)
 		return
 	}
-	response.OkWithData(question, c)
+
+	response.OkWithData(*response.ConvQuestionVo(&question), c)
 
 }
 func (this *QuestionService) Page(query *request.QuestionQueryRequest, c *gin.Context) {
@@ -42,7 +43,27 @@ func (this *QuestionService) Page(query *request.QuestionQueryRequest, c *gin.Co
 	this.buildQueryConds(query, x)
 	x.Find(&questionList)
 
-	response.OkWithData(questionList, c)
+	qvList := make([]response.QuestionVo, len(questionList))
+	for i, v := range questionList {
+		qvList[i] = *response.ConvQuestionVo(&v)
+	}
+
+	var total int64
+	x.Table("t_question").Count(&total)
+	page := response.Page{
+		CountID:          strconv.Itoa(query.Current),
+		Current:          int64(query.Current),
+		MaxLimit:         20,
+		OptimizeCountSql: false,
+		Orders:           nil,
+		Pages:            total / int64(query.PageSize),
+		Records:          qvList,
+		SearchCount:      false,
+		Size:             int64(query.PageSize),
+		Total:            total,
+	}
+
+	response.OkWithData(page, c)
 }
 func (this *QuestionService) buildQueryConds(query *request.QuestionQueryRequest, x *gorm.DB) {
 	if query.Id != 0 {
@@ -71,7 +92,7 @@ func (this *QuestionService) buildQueryConds(query *request.QuestionQueryRequest
 	}
 
 	if len(query.SortField) > 0 {
-		x = x.Order(query.SortField + " " + query.SortOrder)
+		x = x.Order(query.SortField + " " + string(query.SortOrder))
 	}
 }
 func (this *QuestionService) PageVo(query *request.QuestionQueryRequest, c *gin.Context) {
@@ -81,7 +102,27 @@ func (this *QuestionService) PageVo(query *request.QuestionQueryRequest, c *gin.
 	this.buildQueryConds(query, x)
 	x.Find(&questionList)
 
-	response.OkWithData(questionList, c)
+	qvList := make([]response.QuestionVo, len(questionList))
+	for i, v := range questionList {
+		qvList[i] = *response.ConvQuestionVo(&v)
+	}
+
+	var total int64
+	x.Table("t_question").Count(&total)
+	page := response.Page{
+		CountID:          strconv.Itoa(query.Current),
+		Current:          int64(query.Current),
+		MaxLimit:         20,
+		OptimizeCountSql: false,
+		Orders:           nil,
+		Pages:            total / int64(query.PageSize),
+		Records:          qvList,
+		SearchCount:      false,
+		Size:             int64(query.PageSize),
+		Total:            total,
+	}
+
+	response.OkWithData(page, c)
 }
 func (this *QuestionService) Add(questionAdd *request.QuestionAddRequest, c *gin.Context) {
 	data, _ := c.Get(constant.USER_CACHE)

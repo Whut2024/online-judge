@@ -1,8 +1,10 @@
 package service
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/goccy/go-json"
+	"github.com/segmentio/kafka-go"
 	"go-oj/constant"
 	"go-oj/entity/database"
 	"go-oj/entity/request"
@@ -15,6 +17,10 @@ import (
 
 type SubmissionService struct {
 }
+
+var (
+	p = 1
+)
 
 func (this *SubmissionService) Check(id int64, c *gin.Context) {
 	judgeInfoStr := global.Redis.Get(constant.JUDGE_INFO_PREFIX + strconv.FormatInt(id, 10)).Val()
@@ -29,7 +35,8 @@ func (this *SubmissionService) Check(id int64, c *gin.Context) {
 }
 func (this *SubmissionService) DoSubmission(submissionAdd *request.SubmissionDoRequest, c *gin.Context) {
 	var question database.Question
-	global.DB.Find(&question, "id = ?", submissionAdd.QuestionId)
+	id, _ := strconv.ParseInt(submissionAdd.QuestionId, 10, 64)
+	global.DB.Find(&question, "id = ?", id)
 	if question.Id == 0 {
 		response.FailWithMessage("题目不存在", c)
 		return
@@ -48,9 +55,13 @@ func (this *SubmissionService) DoSubmission(submissionAdd *request.SubmissionDoR
 	}
 	global.DB.Create(submission)
 
-	_, _ = global.Kafka.Write([]byte(strconv.FormatInt(submission.Id, 10)))
+	_ = global.Kafka.WriteMessages(context.Background(), kafka.Message{
+		Partition: p % 2,
+		Value:     []byte(strconv.FormatInt(submission.Id, 10)),
+	})
+	p++
 	global.Log.Info("write a message")
-	response.OkWithData(submission.Id, c)
+	response.OkWithData(strconv.FormatInt(submission.Id, 10), c)
 }
 func (this *SubmissionService) Page(query *request.SubmissionQueryRequest, c *gin.Context) {
 	var submissionList []database.AnswerSubmission
@@ -59,7 +70,39 @@ func (this *SubmissionService) Page(query *request.SubmissionQueryRequest, c *gi
 	this.buildQueryConds(query, x)
 	x.Find(&submissionList)
 
-	response.OkWithData(submissionList, c)
+	svList := make([]response.SubmissionVo, len(submissionList))
+	for i, v := range submissionList {
+		var judgeInfo database.JudgeInfo
+		_ = json.Unmarshal([]byte(v.JudgeInfo), &judgeInfo)
+		svList[i] = response.SubmissionVo{
+			Id:            strconv.FormatInt(v.Id, 10),
+			UserId:        v.UserId,
+			QuestionId:    v.QuestionId,
+			SubmittedCode: v.SubmittedCode,
+			JudgeInfo:     judgeInfo,
+			Language:      v.Language,
+			Status:        v.Status,
+			CreateTime:    v.CreateTime,
+			UpdateTime:    v.UpdateTime,
+		}
+	}
+
+	var total int64
+	x.Table("t_answer_submission").Count(&total)
+	page := response.Page{
+		CountID:          strconv.Itoa(query.Current),
+		Current:          int64(query.Current),
+		MaxLimit:         20,
+		OptimizeCountSql: false,
+		Orders:           nil,
+		Pages:            total / int64(query.PageSize),
+		Records:          svList,
+		SearchCount:      false,
+		Size:             int64(query.PageSize),
+		Total:            total,
+	}
+
+	response.OkWithData(page, c)
 }
 func (this *SubmissionService) buildQueryConds(query *request.SubmissionQueryRequest, x *gorm.DB) {
 	if query.Id != 0 {
@@ -79,11 +122,11 @@ func (this *SubmissionService) buildQueryConds(query *request.SubmissionQueryReq
 		x = x.Where("language = ?", query.Language)
 	}
 
-	if query.Status > -1 {
+	/*if query.Status > -1 {
 		x = x.Where("status = ?", query.Status)
-	}
+	}*/
 
 	if len(query.SortField) > 0 {
-		x = x.Order(query.SortField + " " + query.SortOrder)
+		x = x.Order(query.SortField + " " + string(query.SortOrder))
 	}
 }

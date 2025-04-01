@@ -15,5 +15,5 @@ var (
 	DB              *gorm.DB
 	Redis           *redis.Client
 	DistributedLock *redislock.Client
-	Kafka           *kafka.Conn
+	Kafka           *kafka.Writer
 )

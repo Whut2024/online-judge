@@ -15,6 +15,6 @@ func main() {
 	engine := gin.Default()
 	initialize.InitRouter(engine)
 
-	engine.Run("127.0.0.1:2001")
+	engine.Run("0.0.0.0:8101")
 
 }

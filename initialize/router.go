@@ -10,7 +10,7 @@ import (
 func InitRouter(engine *gin.Engine) {
 
 	// 添加全局 interceptor
-	engine.Use(interceptor.GinLogger, interceptor.GinRecovery(false))
+	engine.Use(interceptor.Cors, interceptor.GinLogger, interceptor.GinRecovery(false))
 
 	// 三种权限校验的路由组
 	publicGroup := engine.Group(global.Config.ContextPath)

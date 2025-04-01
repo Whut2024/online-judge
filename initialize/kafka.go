@@ -1,21 +1,18 @@
 package initialize
 
 import (
-	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"go-oj/global"
-	"log"
 )
 
 func InitKafka() {
 	kafkaConfig := global.Config.Kafka
-	conn, err := kafka.DialLeader(context.Background(), "tcp",
-		fmt.Sprintf("%s:%d", kafkaConfig.Host, kafkaConfig.Port),
-		kafkaConfig.Topic, kafkaConfig.Partition)
-	if err != nil {
-		log.Fatal("failed to dial leader:", err)
+	w := &kafka.Writer{
+		Addr:     kafka.TCP(fmt.Sprintf("%s:%d", kafkaConfig.Host, kafkaConfig.Port)),
+		Topic:    kafkaConfig.Topic,
+		Balancer: &kafka.Hash{}, // 即使指定了分区，也建议保留负载均衡器
 	}
 
-	global.Kafka = conn
+	global.Kafka = w
 }

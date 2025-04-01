@@ -20,11 +20,11 @@ func InitConfig() {
 			Host:         "aliyun",
 			Port:         3300,
 			Config:       "charset=utf8mb4&parseTime=True&loc=Local",
-			DBName:       "oj",
+			DBName:       "online_judge",
 			Username:     "root",
 			Password:     "whut2023",
 			MaxIdleConns: 10,
-			MaxOpenConns: 3,
+			MaxOpenConns: 10,
 			LogMode:      "info",
 		}
 		selfConfig.Mysql = mysql
@@ -57,7 +57,7 @@ func InitConfig() {
 		kafkaConfig := config.Kafka{
 			Host:      "hserver",
 			Port:      9095,
-			Topic:     "go-test",
+			Topic:     "oj-submission",
 			Partition: 0,
 		}
 		selfConfig.Kafka = kafkaConfig
