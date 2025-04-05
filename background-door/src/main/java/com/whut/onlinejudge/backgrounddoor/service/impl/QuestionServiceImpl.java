@@ -19,6 +19,7 @@ import com.whut.onlinejudge.common.model.dto.question.QuestionUpdateRequest;
 import com.whut.onlinejudge.common.model.entity.*;
 import com.whut.onlinejudge.common.model.enums.UserRoleEnum;
 import com.whut.onlinejudge.common.model.vo.QuestionVo;
+import com.whut.onlinejudge.common.model.vo.SimpleListQuestionVo;
 import com.whut.onlinejudge.common.service.QuestionService;
 import org.springframework.stereotype.Service;
 
@@ -94,16 +95,18 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     }
 
     @Override
-    public Page<QuestionVo> listQuestionVoByPage(QuestionQueryRequest questionQueryRequest) {
+    public Page<SimpleListQuestionVo> listQuestionVoByPage(QuestionQueryRequest questionQueryRequest) {
         final Page<Question> page = new Page<>(questionQueryRequest.getCurrent(), questionQueryRequest.getPageSize());
-        final Page<Question> questionPage = this.page(page, getQuestionQueryWrapper(questionQueryRequest));
+        final QueryWrapper<Question> wrapper = getQuestionQueryWrapper(questionQueryRequest);
+        wrapper.select("id", "title", "tags", "submission_number", "acceptance_number", "create_time");
+        final Page<Question> questionPage = this.page(page, wrapper);
 
-        final Page<QuestionVo> questionVoPage = new Page<>(questionQueryRequest.getCurrent(), questionQueryRequest.getPageSize());
+        final Page<SimpleListQuestionVo> questionVoPage = new Page<>(questionQueryRequest.getCurrent(), questionQueryRequest.getPageSize());
         questionVoPage.setTotal(questionPage.getTotal());
 
-        List<QuestionVo> questionVoList = new ArrayList<>((int) questionPage.getSize());
+        List<SimpleListQuestionVo> questionVoList = new ArrayList<>((int) questionPage.getSize());
         for (Question question : questionPage.getRecords()) {
-            questionVoList.add(QuestionVo.getQuestionVo(question));
+            questionVoList.add(SimpleListQuestionVo.getSimpleListQuestionVo(question));
         }
         questionVoPage.setRecords(questionVoList);
 

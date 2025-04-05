@@ -25,6 +25,7 @@ import com.whut.onlinejudge.common.model.entity.User;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.model.enums.UserRoleEnum;
 import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
+import com.whut.onlinejudge.common.model.vo.SimpleListAnswerSubmissionVo;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
@@ -86,15 +87,17 @@ public class AnswerSubmissionServiceImpl extends ServiceImpl<AnswerSubmissionMap
     }
 
     @Override
-    public Page<AnswerSubmissionVo> listQuestionSubmitByPage(AnswerSubmissionQueryRequest answerSubmissionQueryRequest) {
+    public Page<SimpleListAnswerSubmissionVo> listQuestionSubmitByPage(AnswerSubmissionQueryRequest answerSubmissionQueryRequest) {
+        final QueryWrapper<AnswerSubmission> wrapper = getAnswerSubmissionWrapper(answerSubmissionQueryRequest);
+        wrapper.select("id", "language", "judge_info", "status", "question_id", "user_id", "create_time");
         final Page<AnswerSubmission> page = this.page(new Page<>(answerSubmissionQueryRequest.getCurrent(),
-                answerSubmissionQueryRequest.getPageSize()), getAnswerSubmissionWrapper(answerSubmissionQueryRequest));
+                answerSubmissionQueryRequest.getPageSize()), wrapper);
 
-        final List<AnswerSubmissionVo> answerSubmissionVoList = new ArrayList<>((int) page.getSize());
+        final List<SimpleListAnswerSubmissionVo> answerSubmissionVoList = new ArrayList<>((int) page.getSize());
         for (AnswerSubmission answerSubmission : page.getRecords()) {
-            answerSubmissionVoList.add(AnswerSubmissionVo.getAnswerSubmissionVo(answerSubmission));
+            answerSubmissionVoList.add(SimpleListAnswerSubmissionVo.getSimpleListAnswerSubmissionVo(answerSubmission));
         }
-        final Page<AnswerSubmissionVo> answerSubmissionVoPage = new Page<>(answerSubmissionQueryRequest.getCurrent(),
+        final Page<SimpleListAnswerSubmissionVo> answerSubmissionVoPage = new Page<>(answerSubmissionQueryRequest.getCurrent(),
                 answerSubmissionQueryRequest.getPageSize());
         answerSubmissionVoPage.setRecords(answerSubmissionVoList);
         answerSubmissionVoPage.setTotal(page.getTotal());

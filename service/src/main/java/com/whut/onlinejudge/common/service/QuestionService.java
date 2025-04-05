@@ -7,6 +7,7 @@ import com.whut.onlinejudge.common.model.dto.question.QuestionUpdateRequest;
 import com.whut.onlinejudge.common.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.whut.onlinejudge.common.model.vo.QuestionVo;
+import com.whut.onlinejudge.common.model.vo.SimpleListQuestionVo;
 
 /**
 * @author laowang
@@ -53,7 +54,7 @@ public interface QuestionService extends IService<Question> {
      * @param questionQueryRequest 包含查询条件和分页信息的请求对象
      * @return 符合查询条件的问题详情视图列表，包含分页信息
      */
-    Page<QuestionVo> listQuestionVoByPage(QuestionQueryRequest questionQueryRequest);
+    Page<SimpleListQuestionVo> listQuestionVoByPage(QuestionQueryRequest questionQueryRequest);
 
     /**
      * 更新问题信息

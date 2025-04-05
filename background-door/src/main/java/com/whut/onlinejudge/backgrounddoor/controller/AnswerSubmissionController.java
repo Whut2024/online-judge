@@ -16,6 +16,7 @@ import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.enums.LanguageEnum;
 import com.whut.onlinejudge.common.model.enums.SatusEnum;
 import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
+import com.whut.onlinejudge.common.model.vo.SimpleListAnswerSubmissionVo;
 import com.whut.onlinejudge.common.service.AnswerSubmissionService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +62,7 @@ public class AnswerSubmissionController {
     }
 
     @PostMapping("/list/page")
-    public BaseResponse<Page<AnswerSubmissionVo>> listQuestionSubmitByPage(@RequestBody AnswerSubmissionQueryRequest answerSubmissionQueryRequest) {
+    public BaseResponse<Page<SimpleListAnswerSubmissionVo>> listQuestionSubmitByPage(@RequestBody AnswerSubmissionQueryRequest answerSubmissionQueryRequest) {
         ThrowUtils.throwIf(answerSubmissionQueryRequest == null,
                 ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final Long userId = answerSubmissionQueryRequest.getUserId();

@@ -18,6 +18,7 @@ import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.common.model.vo.QuestionVo;
+import com.whut.onlinejudge.common.model.vo.SimpleListQuestionVo;
 import com.whut.onlinejudge.common.service.QuestionService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -132,7 +133,7 @@ public class QuestionController {
     }
 
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<QuestionVo>> listQuestionVoByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
+    public BaseResponse<Page<SimpleListQuestionVo>> listQuestionVoByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
         ThrowUtils.throwIf(questionQueryRequest == null,
                 ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final Long id = questionQueryRequest.getId();

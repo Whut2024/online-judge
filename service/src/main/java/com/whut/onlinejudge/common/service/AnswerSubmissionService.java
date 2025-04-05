@@ -7,6 +7,7 @@ import com.whut.onlinejudge.common.model.entity.AnswerSubmission;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.whut.onlinejudge.common.model.entity.JudgeInfo;
 import com.whut.onlinejudge.common.model.vo.AnswerSubmissionVo;
+import com.whut.onlinejudge.common.model.vo.SimpleListAnswerSubmissionVo;
 
 /**
 * @author laowang
@@ -31,7 +32,7 @@ public interface AnswerSubmissionService extends IService<AnswerSubmission> {
      * @param answerSubmissionQueryRequest 包含查询条件和分页信息，如用户ID、问题ID及页码、每页大小等
      * @return 返回一个分页对象，其中包含满足查询条件的问题提交记录列表及总记录数等信息
      */
-    Page<AnswerSubmissionVo> listQuestionSubmitByPage(AnswerSubmissionQueryRequest answerSubmissionQueryRequest);
+    Page<SimpleListAnswerSubmissionVo> listQuestionSubmitByPage(AnswerSubmissionQueryRequest answerSubmissionQueryRequest);
 
     /**
      * 检查提交的运行状态是否为完成
