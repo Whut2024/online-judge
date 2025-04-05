@@ -11,6 +11,7 @@ import com.whut.onlinejudge.core.cache.LocalQuestionCache;
 import com.whut.onlinejudge.core.constant.RedisConstant;
 import com.whut.onlinejudge.core.judge.CoreJudgeStrategy;
 import com.whut.onlinejudge.core.mapper.AnswerSubmissionMapper;
+import com.whut.onlinejudge.core.util.UserHolder;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -55,6 +56,10 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
         }
         as.setId(asId);
 
+        // 缓存用户id
+        UserHolder.set(as.getUserId());
+
+        // 获取题目修改配件缓存信息
         final CacheQuestion cacheQuestion = localQuestionCache.get(as.getQuestionId(), as.getLanguage());
 
         // 校验相关题目

@@ -20,6 +20,21 @@ public class GoCommandGenerator extends AbstractCommandGenerator {
         return "";
     }
 
+    @Override
+    public String getSubmittedCodeSrcPath(String prefix) {
+        return "";
+    }
+
+    @Override
+    public String getCoreCodeSrcPath(String prefix) {
+        return "";
+    }
+
+    @Override
+    public String getSubmittedDentPath(String prefix) {
+        return "";
+    }
+
     protected GoCommandGenerator() {
     }
 }

@@ -28,7 +28,7 @@ public class LocalCodeUtil {
     /**
      * 引导代码完全可以缓存在服务器本地，不用每次都读取SQL数据
      */
-    public static String compile(String language, String baseCode, String coreCode, String prefix) {
+    public static void compileCoreCode(String language, String baseCode, String coreCode, String prefix) {
         // 引导代码路径和源文件路径
         final String submittedSrc = CommandFactory.getSubmittedSrc(language, prefix);
         final String coreCodeSrc = CommandFactory.getCoreCodeSrc(language, prefix);
@@ -39,7 +39,7 @@ public class LocalCodeUtil {
 
         final String command = CommandFactory.getCompilationCoreCodeCommand(language, prefix);
         if (command == null) // 脚本语言
-            return OK;
+            return;
 
         // 编译
         final Process process;
@@ -54,7 +54,7 @@ public class LocalCodeUtil {
                 FileUtil.del(submittedSrc);
                 FileUtil.del(coreCodeSrc);
                 FileUtil.del(prefix);
-                return COMPILE_TIME_OUT;
+                return;
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -63,24 +63,19 @@ public class LocalCodeUtil {
         // 编译失败
         final List<String> errorList = IoUtil.readLines(process.getErrorStream(), StandardCharsets.UTF_8, new ArrayList<>());
         if (CollectionUtil.isNotEmpty(errorList)) {
-            final StringBuilder builder = new StringBuilder(128);
-            for (String s : errorList) {
-                builder.append(s);
-            }
-            return builder.toString();
+            return;
         }
 
         // 删除源文件
         FileUtil.del(submittedSrc);
         FileUtil.del(coreCodeSrc);
         FileUtil.del(CommandFactory.getSubmittedDent(language, prefix));
-        return OK;
     }
 
     /**
      * 仅仅编译用户提交的代码，引导代码已经编译
      */
-    public static String compile(String language, String submittedCode, String prefix) {
+    public static String compileSubmittedCode(String language, String submittedCode, String prefix) {
         // 引导代码路径和源文件路径
         final String submittedSrc = CommandFactory.getSubmittedSrc(language, prefix);
 

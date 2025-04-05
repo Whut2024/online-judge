@@ -7,8 +7,9 @@ import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.core.cache.CacheQuestion;
 import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
-import com.whut.onlinejudge.core.constant.JavaCodeConstant;
+import com.whut.onlinejudge.core.constant.language.JavaCodeConstant;
 import com.whut.onlinejudge.core.util.LocalCodeUtil;
+import com.whut.onlinejudge.core.util.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,9 +36,10 @@ public abstract class CodeRunner {
     public final JudgeInfo run(String language, String submittedCode, CacheQuestion cq, Long id) {
         // 代码编译
         log.info("提交 {}, 代码编译", id);
-        final String prefix = codeRunnerConfig.getPathPrefix() + File.separator + System.currentTimeMillis();
+        final String prefix = codeRunnerConfig.getPathPrefix()
+                + File.separator + UserHolder.get(); // 避免并发冲突
 
-        final String error = LocalCodeUtil.compile(language, submittedCode, prefix);
+        final String error = LocalCodeUtil.compileSubmittedCode(language, submittedCode, prefix);
         if (StrUtil.isNotBlank(error)) {
             // 编译失败
             FileUtil.del(prefix);

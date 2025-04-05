@@ -3,7 +3,7 @@ package com.whut.onlinejudge.core.runner.local;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import com.whut.onlinejudge.core.cache.CacheQuestion;
-import com.whut.onlinejudge.core.constant.JavaCodeConstant;
+import com.whut.onlinejudge.core.constant.language.JavaCodeConstant;
 import com.whut.onlinejudge.core.runner.CodeRunner;
 import com.whut.onlinejudge.core.runner.docker.DockerExecutor;
 import lombok.AllArgsConstructor;

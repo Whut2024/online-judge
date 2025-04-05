@@ -9,6 +9,7 @@ import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.core.mapper.QuestionMapper;
 import com.whut.onlinejudge.core.util.LocalCodeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author liuqiao
  * @since 2025-01-03
  */
+@Slf4j
 @Component
 public class LocalQuestionCache {
 
@@ -122,7 +124,7 @@ public class LocalQuestionCache {
         // loop util get a lock
         while (!compileLock.tryLock()) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(750);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -142,8 +144,13 @@ public class LocalQuestionCache {
             }
 
             // just compile this core code and store the folder path
+            final String coreCode = JSONUtil.parseObj(cq.getCoreCode()).getStr(language);
+            if (StrUtil.isBlank(coreCode)) {
+                log.error("{} 语言不存在", language);
+                throw new RuntimeException("指定编程语言不存在");
+            }
             final String coreLanguageCompiledPath = cachePrefix + File.separator + id + File.separator + language;
-            LocalCodeUtil.compile(language, cq.getBaseCode(), cq.getCoreCode(), coreLanguageCompiledPath);
+            LocalCodeUtil.compileCoreCode(language, cq.getBaseCode(), coreCode, coreLanguageCompiledPath);
             pathMap.put(language, coreLanguageCompiledPath);
 
             // help to gc the useless string
