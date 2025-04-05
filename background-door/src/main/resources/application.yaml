@@ -7,7 +7,7 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: ubantu-server:8848/center-default.yaml
+        server-addr: hserver:8848/center-default.yaml
         namespace: 130ca8b2-25e2-4566-b013-da6005365e57
         group: support
         prefix: center

@@ -25,6 +25,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 @AllArgsConstructor
 @Order(3)
+@Aspect
 public class FrequencyLimit {
 
     private final DistributedLockSupport lockSupport;
