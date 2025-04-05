@@ -1,5 +1,7 @@
 package com.whut.onlinejudge.backgrounddoor.lock;
 
+import com.whut.onlinejudge.backgrounddoor.common.ErrorCode;
+import com.whut.onlinejudge.backgrounddoor.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -43,12 +45,16 @@ public class DistributedLockSupport {
                     else
                         throw e;
                 } finally {
-                    lock.unlock();
+                    try {
+                        lock.unlock();
+                    } catch (Exception e) {
+                        log.warn(e.getMessage());
+                    }
                 }
             } else
                 lockFailTask.execute();
         } catch (InterruptedException e) {
-            log.warn(e.getMessage());
+            throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
     }
 

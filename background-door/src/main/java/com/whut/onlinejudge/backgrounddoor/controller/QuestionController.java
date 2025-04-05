@@ -14,7 +14,6 @@ import com.whut.onlinejudge.common.model.dto.DeleteRequest;
 import com.whut.onlinejudge.common.model.dto.question.QuestionAddRequest;
 import com.whut.onlinejudge.common.model.dto.question.QuestionQueryRequest;
 import com.whut.onlinejudge.common.model.dto.question.QuestionUpdateRequest;
-import com.whut.onlinejudge.common.model.entity.JudgeCase;
 import com.whut.onlinejudge.common.model.entity.JudgeConfig;
 import com.whut.onlinejudge.common.model.entity.Question;
 import com.whut.onlinejudge.common.model.vo.QuestionVo;
@@ -95,11 +94,11 @@ public class QuestionController {
                         id < 0,
                 ErrorCode.PARAMS_ERROR, "ID 错误");
 
-        return ResultUtils.success(QuestionVo.getQuestionVo(questionService.getQuestionById(id)));
+        return ResultUtils.success(questionService.getQuestionVoById(id));
     }
 
     @PostMapping("/list/page")
-    public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
+    public BaseResponse<Page<Question>> questionByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
         ThrowUtils.throwIf(questionQueryRequest == null,
                 ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final Long id = questionQueryRequest.getId();
@@ -133,7 +132,7 @@ public class QuestionController {
     }
 
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<SimpleListQuestionVo>> listQuestionVoByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
+    public BaseResponse<Page<SimpleListQuestionVo>> simpleListQuestionVoByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
         ThrowUtils.throwIf(questionQueryRequest == null,
                 ErrorCode.PARAMS_ERROR, "请求体为NULL");
         final Long id = questionQueryRequest.getId();

@@ -64,4 +64,6 @@ public interface QuestionService extends IService<Question> {
      */
     Boolean updateQuestion(QuestionUpdateRequest questionUpdateRequest);
 
+
+    QuestionVo getQuestionVoById(Long id);
 }

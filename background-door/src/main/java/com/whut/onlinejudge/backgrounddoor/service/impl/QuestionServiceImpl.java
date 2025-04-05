@@ -185,6 +185,18 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
         return this.updateById(question);
     }
+
+    @Override
+    public QuestionVo getQuestionVoById(Long id) {
+        // 查询出对应题目
+        final LambdaQueryWrapper<Question> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Question::getId, id);
+        wrapper.select(Question::getBaseCode, Question::getId, Question::getTitle, Question::getContent, Question::getCreateTime, Question::getJudgeConfig, Question::getTags, Question::getUserId);
+        final Question question = this.getOne(wrapper);
+        ThrowUtils.throwIf(question == null, ErrorCode.PARAMS_ERROR, "题目不存在");
+
+        return QuestionVo.getQuestionVo(question);
+    }
 }
 
 
