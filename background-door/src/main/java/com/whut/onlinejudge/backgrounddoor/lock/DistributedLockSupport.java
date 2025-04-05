@@ -1,6 +1,7 @@
 package com.whut.onlinejudge.backgrounddoor.lock;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @author liuqiao
  * @since 2024-11-30
  */
+@Slf4j
 @Component
 @AllArgsConstructor
 public class DistributedLockSupport {
@@ -46,7 +48,7 @@ public class DistributedLockSupport {
             } else
                 lockFailTask.execute();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            log.warn(e.getMessage());
         }
     }
 
