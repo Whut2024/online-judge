@@ -144,18 +144,23 @@ public class LocalQuestionCache {
             }
 
             // just compile this core code and store the folder path
-            final String coreCode = JSONUtil.parseObj(cq.getCoreCode()).getStr(language);
+            JSONObject coreCodeMap = JSONUtil.parseObj(cq.getCoreCode());
+            JSONObject baseCodeMap = JSONUtil.parseObj(cq.getBaseCode());
+            final String coreCode = coreCodeMap.getStr(language);
             if (StrUtil.isBlank(coreCode)) {
                 log.error("{} 语言不存在", language);
                 throw new RuntimeException("指定编程语言不存在");
             }
             final String coreLanguageCompiledPath = cachePrefix + File.separator + id + File.separator + language;
-            LocalCodeUtil.compileCoreCode(language, cq.getBaseCode(), coreCode, coreLanguageCompiledPath);
+            LocalCodeUtil.compileCoreCode(language, baseCodeMap.getStr(language, ""), coreCode, coreLanguageCompiledPath);
             pathMap.put(language, coreLanguageCompiledPath);
 
             // help to gc the useless string
-            cq.setCoreCode(null);
-            cq.setBaseCode(null);
+            coreCodeMap.remove(language);
+            cq.setCoreCode(coreCodeMap.toJSONString(1));
+
+            baseCodeMap.remove(language);
+            cq.setBaseCode(baseCodeMap.toJSONString(1));
 
             return cq;
         } finally {

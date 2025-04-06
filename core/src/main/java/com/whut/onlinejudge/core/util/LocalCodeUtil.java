@@ -3,6 +3,7 @@ package com.whut.onlinejudge.core.util;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import com.whut.onlinejudge.core.command.CommandFactory;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class LocalCodeUtil {
         FileUtil.writeBytes(coreCode.getBytes(StandardCharsets.UTF_8), coreCodeSrc);
 
         final String command = CommandFactory.getCompilationCoreCodeCommand(language, prefix);
-        if (command == null) // 脚本语言
+        if (StrUtil.isBlank(command)) // 脚本语言
             return;
 
         // 编译
@@ -83,7 +84,7 @@ public class LocalCodeUtil {
         FileUtil.writeBytes(submittedCode.getBytes(StandardCharsets.UTF_8), submittedSrc);
 
         final String command = CommandFactory.getCompilationSubmittedCodeCommand(language, prefix);
-        if (command == null) // 脚本语言
+        if (StrUtil.isBlank(command)) // 脚本语言
             return OK;
 
         // 编译
