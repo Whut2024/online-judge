@@ -9,8 +9,8 @@ import com.whut.onlinejudge.common.service.AnswerSubmissionResolveService;
 import com.whut.onlinejudge.core.cache.CacheQuestion;
 import com.whut.onlinejudge.core.cache.LocalQuestionCache;
 import com.whut.onlinejudge.core.constant.RedisConstant;
-import com.whut.onlinejudge.core.judge.CoreJudgeStrategy;
 import com.whut.onlinejudge.core.mapper.AnswerSubmissionMapper;
+import com.whut.onlinejudge.core.runner.CodeRunner;
 import com.whut.onlinejudge.core.util.UserHolder;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -31,7 +31,7 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
 
     private final AnswerSubmissionMapper asMapper;
 
-    private final CoreJudgeStrategy coreJudgeStrategy;
+    private final CodeRunner runner;
 
     private final LocalQuestionCache localQuestionCache;
 
@@ -74,7 +74,7 @@ public class AnswerSubmissionResolveServiceImpl implements AnswerSubmissionResol
         }
 
         // 代码执行  结果处理
-        final JudgeInfo judgeInfo = coreJudgeStrategy.resolve(as, cacheQuestion);
+        final JudgeInfo judgeInfo = runner.run(as.getLanguage(), as.getSubmittedCode(), cacheQuestion, asId);
         // 保存 redis
         redisTemplate.opsForValue().set(RedisConstant.JUDGE_INFO_PREFIX + asId,
                 JSONUtil.toJsonStr(judgeInfo),

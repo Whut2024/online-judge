@@ -8,6 +8,10 @@ package com.whut.onlinejudge.core.command;
  */
 public abstract class AbstractCommandGenerator {
 
+    String NO_COMPILATION_COMMAND = "";
+
+    String NO_COMPILED_PATH = "";
+
     /**
      * @param submittedCodePrefix 用户提交代码源文件的目录
      * @param coreCodePrefix      核心引导代码源文件的目录
