@@ -7,7 +7,6 @@ import com.whut.onlinejudge.common.model.enums.RunnerStatusEnum;
 import com.whut.onlinejudge.core.cache.CacheQuestion;
 import com.whut.onlinejudge.core.command.CommandFactory;
 import com.whut.onlinejudge.core.config.CodeRunnerConfig;
-import com.whut.onlinejudge.core.constant.language.JavaCodeConstant;
 import com.whut.onlinejudge.core.util.LocalCodeUtil;
 import com.whut.onlinejudge.core.util.UserHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +23,8 @@ import java.util.List;
  */
 @Slf4j
 public abstract class CodeRunner {
+
+    private final static String TRUE = "true";
 
     @Autowired
     private CodeRunnerConfig codeRunnerConfig;
@@ -54,14 +55,16 @@ public abstract class CodeRunner {
         // 代码执行
         log.info("提交 {}, 代码执行", id);
         final CodeRunnerContext runnerContext = new CodeRunnerContext();
-        final String command = CommandFactory.getExecutionCommand(language, prefix, cq.getCompiledPath(language));
-        if (command == null)
-            return JudgeInfo.zeroLimit(RunnerStatusEnum.LANGUAGE_ERROR);
+        try {
+            final String command = CommandFactory.getExecutionCommand(language, prefix, cq.getCompiledPath(language));
+            if (StrUtil.isBlank(command))
+                return JudgeInfo.zeroLimit(RunnerStatusEnum.LANGUAGE_ERROR);
 
-        this.extractOutput(executeUsersCode(command, cq), runnerContext);
-
-        // 删除文件夹
-        FileUtil.del(prefix);
+            this.extractOutput(executeUsersCode(command, cq), runnerContext);
+        } finally {
+            // 删除文件夹
+            FileUtil.del(prefix);
+        }
         return this.getJudgeInfoFromContext(runnerContext);
     }
 
@@ -92,7 +95,7 @@ public abstract class CodeRunner {
      */
     protected final void extractOutput(List<String> outputList, CodeRunnerContext runnerContext) {
         final int size = outputList.size();
-        final boolean pass = JavaCodeConstant.TRUE.equals(outputList.get(size - 1));
+        final boolean pass = TRUE.equals(outputList.get(size - 1));
         int outputSize = -1;
 
         // 设置异常为 ""
@@ -107,7 +110,7 @@ public abstract class CodeRunner {
             runnerContext.setTimeLimit(0);
             runnerContext.setMemoryLimit(0);
             // 没有通过
-            if (JavaCodeConstant.TRUE.equals(outputList.get(size - 2))) {
+            if (TRUE.equals(outputList.get(size - 2))) {
                 // 异常
                 runnerContext.setException(outputList.get(size - 3));
                 outputSize = size - 3;
@@ -119,7 +122,7 @@ public abstract class CodeRunner {
 
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < outputSize; i++) {
-            builder.append(outputList.get(i)).append("\n");
+            builder.append(outputList.get(i)).append(System.lineSeparator());
         }
 
         runnerContext.setOutput(builder.toString());

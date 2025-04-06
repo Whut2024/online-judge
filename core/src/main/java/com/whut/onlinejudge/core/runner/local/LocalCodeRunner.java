@@ -3,14 +3,15 @@ package com.whut.onlinejudge.core.runner.local;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
 import com.whut.onlinejudge.core.cache.CacheQuestion;
-import com.whut.onlinejudge.core.constant.language.JavaCodeConstant;
 import com.whut.onlinejudge.core.runner.CodeRunner;
 import com.whut.onlinejudge.core.runner.docker.DockerExecutor;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +28,27 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class LocalCodeRunner extends CodeRunner {
 
-    private final Runtime runtime = Runtime.getRuntime();
+    private final String FALSE = "false";
 
     @Override
     protected List<String> executeUsersCode(String command, CacheQuestion cq) {
         final Process process;
         try {
-            process = runtime.exec(command);
+            ProcessBuilder builder = new ProcessBuilder("/bin/sh", "-c", command);
+            process = builder.start();
             // 设置参数相关的输入流
-            IoUtil.write(process.getOutputStream(), StandardCharsets.UTF_8, true, (Object[]) cq.getInputAll());
-        } catch (IOException e) {
+            OutputStream stdin = process.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(stdin, StandardCharsets.UTF_8));
+            String[] inputAll = cq.getInputAll();
+            for (String s : inputAll) {
+                writer.write(s);
+            }
+            writer.write("");
+            writer.newLine();
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         try {
@@ -44,8 +56,8 @@ public class LocalCodeRunner extends CodeRunner {
                 process.destroy();
                 final List<String> list = new ArrayList<>();
                 list.add("运行时间过长");
-                list.add(JavaCodeConstant.FALSE);
-                list.add(JavaCodeConstant.FALSE);
+                list.add(FALSE);
+                list.add(FALSE);
                 return list;
             }
         } catch (InterruptedException e) {
