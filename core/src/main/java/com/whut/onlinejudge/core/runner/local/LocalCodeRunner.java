@@ -52,7 +52,7 @@ public class LocalCodeRunner extends CodeRunner {
             throw new RuntimeException(e);
         }
         try {
-            if (!process.waitFor(cq.getJudgeConfig().getTimeLimit() * 3L / 2, TimeUnit.MILLISECONDS)) {
+            if (!process.waitFor(cq.getJudgeConfig().getTimeLimit() * 4L, TimeUnit.MILLISECONDS)) {
                 process.destroy();
                 final List<String> list = new ArrayList<>();
                 list.add("运行时间过长");
