@@ -6,13 +6,13 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: hserver:8848/oj_core-1.yaml
+        server-addr: aliyun:8848/oj_core-1.yaml
         namespace: 130ca8b2-25e2-4566-b013-da6005365e57
         group: support
         prefix: oj_core
         file-extension: yaml
-        username: nacos
-        password: nacos
+        username: oj
+        password: manbaout
 
 code-runner:
   environment: local
