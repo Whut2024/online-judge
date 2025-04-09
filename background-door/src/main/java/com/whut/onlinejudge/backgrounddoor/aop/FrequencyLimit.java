@@ -24,7 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 //@Aspect
 @Component
 @AllArgsConstructor
-@Order(3)
+@Order(1)
 @Aspect
 public class FrequencyLimit {
 
@@ -59,14 +59,9 @@ public class FrequencyLimit {
 
     @Around("execution(* com.whut.onlinejudge.backgrounddoor.controller..*.*(..))")
     public Object totalLimit(ProceedingJoinPoint joinPoint) {
-        final User user = UserHolder.tryGet();
-        final String key;
-        if (user == null)
-            key = RedisConstant.GLOBAL_LIMIT_KEY +
-                    NetUtils.getIpAddress(((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes()))
-                            .getRequest());
-        else
-            key = RedisConstant.GLOBAL_LIMIT_KEY + user.getId();
+        final String key = RedisConstant.GLOBAL_LIMIT_KEY +
+                NetUtils.getIpAddress(((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes()))
+                        .getRequest());
 
 
         final Object[] result = new Object[1];

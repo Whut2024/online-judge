@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Aspect
-@Order(1)
+@Order(2)
 @AllArgsConstructor
 @Component
 @Slf4j
@@ -35,21 +35,17 @@ public class UserInfoAdvisor {
 
     @Before("execution(* com.whut.onlinejudge.backgrounddoor.controller..*.*(..))")
     public void setUserInfo() {
-        log.info("enter setUserInfo");
         final HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
 
         final String token = request.getHeader("token");
         if (StrUtil.isBlank(token) || token.length() != 32)
             return;
 
-        log.info("get a token");
-
         final String userKey = RedisConstant.USER_CACHE + token;
         final String userVoStr = redisTemplate.opsForValue().get(userKey);
         if (StrUtil.isBlank(userVoStr))
             return;
 
-        log.info("get userVoStr");
         final User user;
         try {
             user = JSONUtil.toBean(userVoStr, User.class);
@@ -62,7 +58,6 @@ public class UserInfoAdvisor {
         if (!user.getVersion().toString().equals(version))
             return;
 
-        log.info("get a valid version");
         redisTemplate.expire(userKey, RedisConstant.USER_CACHE_TIME, TimeUnit.MILLISECONDS);
         redisTemplate.expire(versionKey, RedisConstant.USER_LOGIN_VERSION_TIME, TimeUnit.MILLISECONDS);
 
