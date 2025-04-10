@@ -55,8 +55,8 @@ public class UserInfoAdvisor {
 
         final String versionKey = RedisConstant.USER_LOGIN_VERSION_KEY + user.getId();
         final String version = redisTemplate.opsForValue().get(versionKey);
-        if (!user.getVersion().toString().equals(version))
-            return;
+        /*if (!user.getVersion().toString().equals(version))
+            return;*/
 
         redisTemplate.expire(userKey, RedisConstant.USER_CACHE_TIME, TimeUnit.MILLISECONDS);
         redisTemplate.expire(versionKey, RedisConstant.USER_LOGIN_VERSION_TIME, TimeUnit.MILLISECONDS);
